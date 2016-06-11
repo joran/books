@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "-------------------------------------------"
+echo "B U I L D I N G"
+echo "-------------------------------------------"
+cd $OPENSHIFT_REPO_DIR
+mvn package -s .openshift/settings.xml -DskipTests=true
