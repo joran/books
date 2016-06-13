@@ -4,22 +4,26 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Book {
-	private final UUID id;
-	private final String author;
-	private final String titel;
-	private final int pages;
-	private LocalDate completed;
+	private UUID id;
+	private String author;
+	private String title;
+	private Integer pages;
+	private LocalDate finishedReading;
 	
 	
-	Book(UUID id, String author, String titel, int pages) {
+	private Book() {
+		super();
+	}
+
+	Book(UUID id, String author, String title, int pages) {
 		super();
 		this.id = id;
 		this.author = author;
-		this.titel = titel;
+		this.title = title;
 		this.pages = pages;
 	}
 
-	public Book(String author, String titel, int pages) {
+	public Book(String author, String titel, Integer pages) {
 		this(UUID.randomUUID(), author, titel, pages);
 	}
 	
@@ -29,21 +33,18 @@ public class Book {
 	public String getAuthor() {
 		return author;
 	}
-	public String getTitel() {
-		return titel;
+	public String getTitle() {
+		return title;
 	}
 	public int getPages() {
 		return pages;
 	}
-	public LocalDate getCompleted() {
-		return completed;
-	}
-	void setCompleted(LocalDate completed) {
-		this.completed = completed;
+
+	public LocalDate getFinishedReading() {
+		return finishedReading;
 	}
 
-	public Book complete() {
-		setCompleted(LocalDate.now());
-		return this;
+	public void setFinishedReading(LocalDate finishedReading) {
+		this.finishedReading = finishedReading;
 	}
 }
