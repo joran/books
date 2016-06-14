@@ -1,9 +1,11 @@
 package se.js.books.api;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -26,10 +28,24 @@ public class BooksController {
     @ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Book> findAll(){
-		return bookstore.findAllBooks();
+		return bookstore.findAllAvailableBooks();
 	}
 	
     @ResponseBody
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+	public Book findBookByIdk(@PathVariable UUID id, HttpServletResponse response){
+		Optional<Book> optBook = bookstore.findById(id);
+		Book book = null;
+		int status = HttpServletResponse.SC_NOT_FOUND;
+		if(optBook.isPresent()) {
+			book = optBook.get();
+			status = HttpServletResponse.SC_OK;
+		}
+		response.setStatus(status);
+		return book;
+	}
+
+	@ResponseBody
 	@RequestMapping(method=RequestMethod.POST)
 	public Book addNewBook(@RequestBody Book b){
     	return bookstore.addNewBook(b.getAuthor(), b.getTitle(), b.getPages());
@@ -44,8 +60,16 @@ public class BooksController {
 	}
 	
     @ResponseBody
-	@RequestMapping(value="/{id}/done", method=RequestMethod.PUT)
-	public void finishReadingBook(@PathVariable UUID id){
+	@RequestMapping(value="/{id}/read", method=RequestMethod.PUT)
+	public void finishReadingBook(@PathVariable UUID id, HttpServletResponse response){
 		bookstore.finishReadingBook(id);
+		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	}
+
+    @ResponseBody
+	@RequestMapping(value="/{id}/incrating", method=RequestMethod.PUT)
+	public void ratingBook(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
+		bookstore.incRatingBook(id);
+		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 }
