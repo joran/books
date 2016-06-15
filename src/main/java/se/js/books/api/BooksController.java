@@ -49,8 +49,6 @@ public class BooksController {
 	@RequestMapping(method=RequestMethod.POST)
 	public Book addNewBook(@RequestBody Book b){
     	return bookstore.addNewBook(b.getAuthor(), b.getTitle(), b.getPages());
-//    	public Book addNewBook(String author,String title, int pages){
-//		return bookstore.addNewBook(author, title, pages);
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
@@ -67,7 +65,7 @@ public class BooksController {
 	}
 
     @ResponseBody
-	@RequestMapping(value="/{id}/incrating", method=RequestMethod.PUT)
+	@RequestMapping(value="/{id}/inc", method=RequestMethod.PUT)
 	public void ratingBook(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
 		bookstore.incRatingBook(id);
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
