@@ -24,7 +24,7 @@ public class BookStoreService {
 	List<BookEvent> events = new ArrayList<>();
 	List<BookReadRegistration> booksRead = new ArrayList<>();
 	Map<UUID, List<BookRatingRegistration>> bookRatings = new HashMap<>();
-	
+
 	@PostConstruct
 	void init() {
 		events.add(BookEvent.created(new Book("Astrid Lindgren", "Pippi Långstrump", 55)));
