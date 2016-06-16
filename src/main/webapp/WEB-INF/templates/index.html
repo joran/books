@@ -5,17 +5,17 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <title>Läsutmaning sommaren 2016</title>
+    <title>L&auml;sutmaning sommaren 2016</title>
     
     <meta charset="UTF-8" />
 </head>
 <body>
-	<h1>Läsutmaning sommaren 2016</h1>
+	<h1>L&auml;sutmaning sommaren 2016</h1>
 	<form action="#" th:action="@{/ui/index.html}" th:object="${book}" method="POST" accept-charset="UTF-8">
 		<table>
 			<thead>
 				<tr>
-					<th>Författare</th>
+					<th>F&ouml;rfattare</th>
 					<th>Bok</th>
 					<th>Sidor</th>
 					<th></th>
@@ -26,11 +26,11 @@
 					<td><input name="author" th:field="*{author}"/></td>
 					<td><input name="title" th:field="*{title}"/></td>
 					<td><input name="pages" th:field="*{pages}"/></td>
-					<td><button type="submit" name="saveBook">Lägg till bok</button></td>
+					<td><button type="submit" name="saveBook">L&auml;gg till bok</button></td>
 				</tr>
 				<tr th:each="book : ${books}">
 					<td th:text="${book.author}">Astrid Lindgren</td>
-					<td th:text="${book.title}">Pippi Långstrump</td>
+					<td th:text="${book.title}">Pippi L&aring;ngstrump</td>
 					<td th:text="${book.pages}">123</td>
 					<td><button type="submit" name="removeBook" th:value="${book.id}">Ta bort bok</button></td>
 				</tr>
