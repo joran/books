@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+    <html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Läsutmaning sommaren 2016</title>
+    
+    <meta charset="UTF-8" />
+</head>
+<body>
+	<h1>Läsutmaning sommaren 2016</h1>
+	<form action="#" th:action="@{/ui/index.html}" th:object="${book}" method="POST" accept-charset="UTF-8">
+		<table>
+			<thead>
+				<tr>
+					<th>Författare</th>
+					<th>Bok</th>
+					<th>Sidor</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><input name="author" th:field="*{author}"/></td>
+					<td><input name="title" th:field="*{title}"/></td>
+					<td><input name="pages" th:field="*{pages}"/></td>
+					<td><button type="submit" name="saveBook">Lägg till bok</button></td>
+				</tr>
+				<tr th:each="book : ${books}">
+					<td th:text="${book.author}">Astrid Lindgren</td>
+					<td th:text="${book.title}">Pippi Långstrump</td>
+					<td th:text="${book.pages}">123</td>
+					<td><button type="submit" name="removeBook" th:value="${book.id}">Ta bort bok</button></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td style="border-top:1pt solid black">Totalt antal sidor:</td>
+					<td th:text="${totalPages}" style="border-top:1pt solid black">123</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</body>
+</html>

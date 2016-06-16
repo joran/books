@@ -5,8 +5,6 @@ import static se.js.books.util.DateUtil.format;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import se.js.books.util.DateUtil;
-
 public class Book {
 	private UUID id;
 	private String author;
@@ -15,7 +13,7 @@ public class Book {
 	private LocalDate added;
 	private LocalDate removed;
 	
-	private Book() {
+	public Book() {
 		super();
 	}
 
@@ -36,14 +34,37 @@ public class Book {
 	public UUID getId() {
 		return id;
 	}
+
 	public String getAuthor() {
 		return author;
 	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
 	public String getTitle() {
 		return title;
 	}
-	public int getPages() {
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Integer getPages() {
 		return pages;
+	}
+
+	public void setPages(Integer pages) {
+		this.pages = pages;
+	}
+
+	public LocalDate getAdded() {
+		return added;
+	}
+
+	public void setAdded(LocalDate added) {
+		this.added = added;
 	}
 
 	public LocalDate getRemoved() {
@@ -52,10 +73,6 @@ public class Book {
 
 	public void setRemoved(LocalDate removed) {
 		this.removed = removed;
-	}
-
-	public LocalDate getAdded() {
-		return added;
 	}
 
 	@Override
