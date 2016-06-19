@@ -2,6 +2,7 @@ package se.js.books.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import se.js.books.domain.Book;
@@ -20,6 +23,9 @@ import se.js.books.service.event.BookEvent;
 
 @Service
 public class BookStoreService {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(BookStoreService.class);
+
 	List<Book> books = new ArrayList<>();
 	List<BookEvent> events = new ArrayList<>();
 	List<BookReadRegistration> booksRead = new ArrayList<>();
@@ -27,9 +33,13 @@ public class BookStoreService {
 
 	@PostConstruct
 	void init() {
-		events.add(BookEvent.created(new Book("Astrid Lindgren", "Pippi Långstrump", 55)));
-		events.add(BookEvent.created(new Book("J.K. Rawlings", "De vises sten", 385)));
-		events.add(BookEvent.created(new Book("J.K. Rawlings", "Den flammande bägaren", 463)));
+		Book[] books = new Book[] {
+				new Book("Astrid Lindgren", "Pippi Långstrump", 55),
+				new Book("J.K. Rawlings", "De vises sten", 385),
+				new Book("J.K. Rawlings", "Den flammande bägaren", 463)
+		};
+		Arrays.stream(books).forEach(book -> events.add(BookEvent.created(book)));
+		events.add(BookEvent.rated(books[0], 1));
 		replay(events);
 	}
 	
@@ -103,8 +113,16 @@ public class BookStoreService {
 		return booksRead;
 	}
 	
-	public Map<UUID, List<BookRatingRegistration>> getRatings(){
+	public Map<UUID, List<BookRatingRegistration>> findAllRatings(){
 		return bookRatings;
+	}
+
+	public Optional<BookRatingRegistration> findLastRatingByBookId(UUID bookId){
+		List<BookRatingRegistration> ratings = bookRatings.get(bookId);
+		if(ratings == null) {
+			return Optional.empty();			
+		}
+		return ratings.stream().reduce((a,b) -> b);
 	}
 
 	public Book addNewBook(String author, String title, int pages) {
@@ -139,7 +157,21 @@ public class BookStoreService {
 			handleNewEvent(BookEvent.ratingIncremented(optBook.get()));
 		}
 	}
+	public void rateBook(UUID id, int rate) {
+		Optional<Book> optBook = findById(id);
+		if(optBook.isPresent()) {
+			handleNewEvent(BookEvent.rated(optBook.get(), rate));
+		}
+	}
+	
 	public void reload() {
 		replay(events);
+	}
+	
+	public List<BookEvent> getAllEvents(){
+		for (BookEvent bookEvent : events) {
+			LOG.info("Event: " + bookEvent);
+		}
+		return events;
 	}
 }

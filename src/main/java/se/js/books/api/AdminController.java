@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import se.js.books.domain.BookRatingRegistration;
 import se.js.books.domain.BookReadRegistration;
 import se.js.books.service.BookStoreService;
+import se.js.books.service.event.BookEvent;
 
 @Controller
 @RequestMapping("/api/admin")
@@ -25,9 +26,15 @@ public class AdminController {
 	
     @ResponseBody
 	@RequestMapping(path="reload", method=RequestMethod.GET)
-	public void findAll(HttpServletResponse response){
+	public void reload(HttpServletResponse response){
 		bookstore.reload();
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	}
+	
+    @ResponseBody
+	@RequestMapping(path="events", method=RequestMethod.GET)
+	public List<BookEvent> findAllEvents(HttpServletResponse response){
+		return bookstore.getAllEvents();
 	}
 	
     @ResponseBody
@@ -39,6 +46,6 @@ public class AdminController {
     @ResponseBody
 	@RequestMapping(path="ratings", method=RequestMethod.GET)
 	public Map<UUID, List<BookRatingRegistration>> ratings(HttpServletResponse response){
-		return bookstore.getRatings();
+		return bookstore.findAllRatings();
 	}
 }

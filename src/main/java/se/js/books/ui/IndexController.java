@@ -2,6 +2,7 @@ package se.js.books.ui;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import se.js.books.domain.Book;
 import se.js.books.service.BookStoreService;
+import se.js.books.ui.index.UIBook;
 
 @Controller
 @RequestMapping("/ui")
@@ -34,8 +36,11 @@ public class IndexController {
 	}
 
 	@ModelAttribute("books")
-	private List<Book> findAll(){
-		return bookstore.findAllAvailableBooks();
+	private List<UIBook> findAll(){
+		List<UIBook> bs = bookstore.findAllAvailableBooks().stream()
+				.map(b -> new UIBook(b, bookstore.findLastRatingByBookId(b.getId())))
+				.collect(Collectors.toList());
+		return bs;
 	}
 
 	@ModelAttribute("totalPages")
@@ -43,7 +48,7 @@ public class IndexController {
 		return bookstore.findAllAvailableBooks().stream().mapToInt(b -> b.getPages()).sum();
 	}
 
-	@RequestMapping({"/", "/index.html"})
+	@RequestMapping({"/index.html"})
 	public String index(Model model){
 		return "index";
 	}
@@ -57,6 +62,7 @@ public class IndexController {
 		model.clear();
 		return "redirect:/ui/index.html";
 	}
+	
 	@RequestMapping(value="/index.html", params= {"removeBook"})
 	public String remove(final Book book, final BindingResult bindingResult, final HttpServletRequest req, final ModelMap model){
 		UUID id = UUID.fromString(req.getParameter("removeBook"));

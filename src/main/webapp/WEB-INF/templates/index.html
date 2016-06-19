@@ -1,47 +1,273 @@
 <!DOCTYPE HTML>
-    <html xmlns="http://www.w3.org/1999/xhtml" 
+    <html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:th="http://www.thymeleaf.org" 
     xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
     <title>L&auml;sutmaning sommaren 2016</title>
-    
     <meta charset="UTF-8" />
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"/>
+	
+   <style>
+      body { padding-top: 60px;font-family:Comic Sans MS}
+      .navbar-brand{font-family:Comic Sans MS; letter-spacing:3px}
+      .navbar-brand::first-letter{font-size: 140%; font-weight:bold;color:orange}
+      th,td{padding: 10px 3px 5px 2px;white-space: nowrap}
+      .number{text-align:right}
+      input{width:100%}
+      
+.star{
+    background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAABQCAYAAAAZQFV3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABOFJREFUeNrsmEFoHFUYx9/MdHfTJRKzUhBaFiL1YghZCFQUIV6UQJuLWCgr8eKpIoiFSqsHQYrmYj14KHqxKAl6MbA5eCgKRVAMBhpCwIJQCETRQzTsNtnO7s74+17fbGc3M7OzZhUsHfjzdvd97/++973vff99Y/m+rwb5WL0Idz60h2nckTc8Nw2hncLmAnhtIB7i3VGan8VD8Dhebh+U8FOaX8Bh4EB48R8TQlai+QnkgMTxD/AYpFt9EULk0EyBD8Dn4BPT9TZ4CrwD6Wos4V+XrUdpXzQk4tUEkAFXwNUu+1fAWWO7anADLDLJTkCYpf0K3DQe3Ui5oUI6B8ShlyBstZfMMiXoX4MV8GZKQgnJcXA6nKPtGJoE/gZ8Cy6mIJPwnIJsL3ZTIB2h+U6WANZjyE6Aj8Cz3WT7TooJ7HUwneDdc+BaFFnc0SuCzQTCTWOT+iwfN6cjWJ6clo9NzOS5Bcb6IZTZj5pU+syEYNV8XzA2Y6lOCptyhGbDeDFPnJa6TlGZ5rxJ/nxkSRPCACR5EUyHf4sCNjOgENVn/ecVe+CEy8vLWgJmZ2fd1IRra2vxSbe5eYlmu1gsXo6zmZycTKcpkEn6vC61kM+FQYiUeDdvauP5Ay0ZjyIlgKVv9bVkiBwQVJRX2YwWkKLxrhxB+qYSPaxUKrESANHVrh2PlQAzqSbskAA6UkkA5B0SICvRSzb5ddrMWu4jh8umSLwckLVjSKClWJ6SwsrM76fwLpCAM4x1I9OGjhrN8+AkAyYSyGTDnhEHjCPxeYhBagmIIvtXJOBQkgSY5Z01/76umAy4lbpiG5IqzQuG6Alz9LLmf+IP5hh+AfmxnoSQdUgAg5a6JuuQgMiSFi7fJHkR9JQAbGbA/SoBi4uLWgLK5XIqCdBpkyQBZne3sTm4BGxsbLQlgM+DkYBsNjucyWQKaSXATvCuZFnWHIQqlxMVUOeMx/0RMsgBWgIgcyBVgqwwIwH0JUvAwsJChwQwuOQ4jrJtO/CsfQBc11We56lWqyXfOySALNgJdlmuWzNSB/P5vBKyyJnxMjxBs9mc2tvbEye+DN1l7uYhuaZvAXg1LaQyOOkRL3d3d8XLishHOEd1DMfHx7UEYLjCrCop2aXP2Mht4QxjoyWADi0BxGddZm80GjpWYSL5TfpkYnHAOBK/yxhoCZAl1et1PbharWrUajX9m/SJBESRJUlAr6fvW0CvZyyxOIQPN4kbnv1mlwQERGPhMbHli/Q5Yv5lSdDnSYelrlLWIQGRJS1cvjk1RdBTArCZAferBPT7IkjvcuP7t3pKADaxEpB5+r10FXv3x3kKqqUlgM+DkQB76OFhKzdycAnAo5KynTlraFTZQ4/gqH3ursd9EjLIAVoC7KGCAxFWNqSjWgLoS5aAfS+C7EzJcrLKOjSkrNwoFu0ToPz6n8pv3dFQXjPyRdA9CbDsk/ZDx5SQxWiAsg4X7vE361NedQsn/P0SELwIgmzaHiZMtpMcKK+pWlUuVF6j0v0iSMcw/+QFLQF+y13xbv/GpF4CWUt5tV+FTEsAY6MlgA4tASxlnaUo362yLGLlh2Lo1iCjj4nFAeNI/H9sDHbYxesEfcK//XvSoq9Fkf0/JCDqDWfV3I+TJGCLne19CzAvgtoS8OBF0APC6OdvAQYAj2xzC/IfXBsAAAAASUVORK5CYII=');
+    background-position:left -2px;
+    display:block;
+    width:20px;
+    height:16px;
+    line-height:16px;
+    float:left;
+    cursor: pointer;
+    zoom:1;
+}
+
+.fullStar{
+    background-position:left -59px;
+}
+
+.stars{
+    overflow: hidden;
+}
+
+.tmp_es{
+    background-position:left -21px;
+}
+
+.tmp_fs{
+    background-position:left -40px;
+}      
+    </style>  
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	
 </head>
 <body>
-	<h1>L&auml;sutmaning sommaren 2016</h1>
-	<form action="#" th:action="@{/ui/index.html}" th:object="${book}" method="POST" accept-charset="UTF-8">
-		<table>
-			<thead>
-				<tr>
-					<th>F&ouml;rfattare</th>
-					<th>Bok</th>
-					<th>Sidor</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><input name="author" th:field="*{author}"/></td>
-					<td><input name="title" th:field="*{title}"/></td>
-					<td><input name="pages" th:field="*{pages}"/></td>
-					<td><button type="submit" name="saveBook">L&auml;gg till bok</button></td>
-				</tr>
-				<tr th:each="book : ${books}">
-					<td th:text="${book.author}">Astrid Lindgren</td>
-					<td th:text="${book.title}">Pippi L&aring;ngstrump</td>
-					<td th:text="${book.pages}">123</td>
-					<td><button type="submit" name="removeBook" th:value="${book.id}">Ta bort bok</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td style="border-top:1pt solid black">Totalt antal sidor:</td>
-					<td th:text="${totalPages}" style="border-top:1pt solid black">123</td>
-					<td></td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
+   <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand text-uppercase" href="#">L&auml;sutmaning sommaren 2016</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Mina b&ouml;cker</a></li>
+            <li><a href="#events">Vad har h&auml;nt</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    	<div class="starter-template">
+			<div>
+				<div>
+					<div>
+			<form action="#" th:action="@{/ui/index.html}" th:object="${book}" method="POST" accept-charset="UTF-8">
+				<table class="table">
+					<thead>
+						<tr>
+							<th width="35%">Bokens/Tidningens titel</th>
+							<th width="20%">F&ouml;rfattare</th>
+							<th width="10%">Antal l&auml;sta sidor</th>
+							<th width="20%"></th>
+							<th width="15%"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input name="title" th:field="*{title}"/></td>
+							<td><input name="author" th:field="*{author}"/></td>
+							<td class="number"><input name="pages" size="5" class="number" th:field="*{pages}"/></td>
+							<td colspan="2"><button type="submit" name="saveBook" class="btn btn-success">L&auml;gg till bok</button></td>
+						</tr>
+						<tr th:each="book,iterStat : ${books}">
+							<td th:text="${book.title}">Pippi L&aring;ngstrump</td>
+							<td th:text="${book.author}">Astrid Lindgren</td>
+							<td class="number" th:text="${book.pages}">123</td>
+							<td>
+								<span class="star-rating" th:attr="data-bookid=${book.id}">
+								  <input type="radio" th:name="${'book.'+book.id+'.rate'}" value="1" th:checked="${book.rate == 1}"/>
+								  <input type="radio" th:name="${'book.'+book.id+'.rate'}" value="2" th:checked="${book.rate == 2}"/>
+								  <input type="radio" th:name="${'book.'+book.id+'.rate'}" value="3" th:checked="${book.rate == 3}"/>
+								  <input type="radio" th:name="${'book.'+book.id+'.rate'}" value="4" th:checked="${book.rate == 4}"/>
+								  <input type="radio" th:name="${'book.'+book.id+'.rate'}" value="5" th:checked="${book.rate == 5}"/>
+								</span>
+							</td>
+							<td class="buttons">
+								<button type="submit" name="removeBook" class="btn btn-danger" th:value="${book.id}">Ta bort bok</button>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td style="text-align:right; border-top:1pt solid black">Totalt antal sidor:</td>
+							<td class="number" th:text="${totalPages}" style="border-top:1pt solid black">123</td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+					</div>
+				</div>
+			</div>
+    	</div>
+    </div>
+
+
+    <script>
+    (function($){
+    $.fn.rating = function(callback){
+        
+        callback = callback || function(){};
+
+        // each for all item
+        this.each(function(i, v){
+            
+            $(v).data('rating', {callback:callback})
+                .bind('init.rating', $.fn.rating.init)
+                .bind('set.rating', $.fn.rating.set)
+                .bind('hover.rating', $.fn.rating.hover)
+                .trigger('init.rating');
+        });
+    };
+    
+    $.extend($.fn.rating, {
+        init: function(e){
+            var el = $(this),
+                list = '',
+                isChecked = null,
+                childs = el.children(),
+                l = childs.length,
+				bookId = el.data("bookid");
+				
+              for (var i = 0; i != l; i++) {
+		                list = list + '<a class="star" title="' + $(childs[i]).val() + '" data-bookid="' + bookId +'" />';
+		                if ($(childs[i]).is(':checked')) {
+		                    isChecked = $(childs[i]).val();
+		                };
+                };
+            
+            childs.hide();
+            
+            el.append('<div class="stars">' + list + '</div>')
+              .trigger('set.rating', isChecked);
+            
+            $('a', el).bind('click', $.fn.rating.click);            
+            el.trigger('hover.rating');
+        },
+        set: function(e, val) {
+            var el = $(this),
+                item = $('a', el),
+                input = undefined;
+            
+            if (val) {
+                item.removeClass('fullStar');
+                
+                input = item.filter(function(i){
+                    if ($(this).attr('title') == val)
+                        return $(this);
+                    else
+                        return false;
+                });
+                
+                input
+                    .addClass('fullStar')
+                    .prevAll()
+                    .addClass('fullStar');
+            }
+            
+            return;
+        },
+        hover: function(e){
+            var el = $(this),
+                stars = $('a', el);
+            
+            stars.bind('mouseenter', function(e){
+                // add tmp class when mouse enter
+                $(this)
+                    .addClass('tmp_fs')
+                    .prevAll()
+                    .addClass('tmp_fs');
+                
+                $(this).nextAll()
+                    .addClass('tmp_es');
+            });
+            
+            stars.bind('mouseleave', function(e){
+                // remove all tmp class when mouse leave
+                $(this)
+                    .removeClass('tmp_fs')
+                    .prevAll()
+                    .removeClass('tmp_fs');
+                
+                $(this).nextAll()
+                    .removeClass('tmp_es');
+            });
+        },
+        click: function(e){
+            e.preventDefault();
+            var el = $(e.target),
+                container = el.parent().parent(),
+                inputs = container.children('input'),
+                rate = el.attr('title');
+                
+            matchInput = inputs.filter(function(i){
+                if ($(this).val() == rate)
+                    return true;
+                else
+                    return false;
+            });
+            
+            matchInput
+                .attr('checked', true)
+				.siblings('input').attr('checked', false);
+            
+            container
+                .trigger('set.rating', matchInput.val())
+                .data('rating').callback(rate, e);
+        }
+    });
+    
+})(jQuery);
+
+jQuery('.star-rating').rating(function(rate, e){
+	var bookId = jQuery(e.target).data("bookid");
+	jQuery.ajax({
+	    headers: { 
+	        'Accept': 'application/json',
+	        'Content-Type': 'application/json' 
+	    },
+		method:"PUT",
+		url:`/api/books/${bookId}/rate`,
+		data:JSON.stringify({rate:rate}),
+		dataType:'json'
+	}).done(function(msg){
+		console.log(`Rating saved: ${msg}`);
+	});
+});
+
+</script>
+
+
+
 </body>
 </html>

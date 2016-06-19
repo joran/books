@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import se.js.books.domain.Book;
+import se.js.books.domain.BookRating;
+import se.js.books.domain.BookRatingRegistration;
 import se.js.books.service.BookStoreService;
 
 @Controller
@@ -66,8 +68,26 @@ public class BooksController {
 
     @ResponseBody
 	@RequestMapping(value="/{id}/inc", method=RequestMethod.PUT)
-	public void ratingBook(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
+	public void incBookRating(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
 		bookstore.incRatingBook(id);
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
+
+    @ResponseBody
+	@RequestMapping(value="/{id}/rate", method=RequestMethod.GET)
+	public BookRating getBookRate(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
+    	Optional<BookRatingRegistration> lastRating = bookstore.findLastRatingByBookId(id);
+		if(lastRating.isPresent()) {
+			return new BookRating(lastRating.get().getRating());
+		}
+		return new BookRating();
+    }
+    @ResponseBody
+	@RequestMapping(value="/{id}/rate", method=RequestMethod.PUT)
+	public BookRating rateBook(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response, @RequestBody BookRating rating){
+    	bookstore.rateBook(id, rating.getRate());
+		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+		return rating;
+    }
+    
 }
