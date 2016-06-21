@@ -13,8 +13,8 @@ public class BookEvent {
 	private LocalDateTime occurred;
 	
 	private Book book;
-	private String review;
-	private Integer rating;
+	private String review = "";
+	private int rating = RATE_UNRATED;
 	
 	private BookEvent() {
 		super();

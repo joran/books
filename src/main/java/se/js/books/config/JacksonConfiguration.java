@@ -1,4 +1,4 @@
-package se.js.books;
+package se.js.books.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

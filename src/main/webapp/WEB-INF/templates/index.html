@@ -6,7 +6,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <title>L&auml;sutmaning sommaren 2016</title>
+    <title th:text="#{app.title}">Title</title>
     <meta charset="UTF-8" />
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
@@ -65,12 +65,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand text-uppercase" href="#">L&auml;sutmaning sommaren 2016</a>
+          <a class="navbar-brand text-uppercase" href="#" th:text="#{app.title}">Title</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Mina b&ouml;cker</a></li>
-            <li><a href="#events">Vad har h&auml;nt</a></li>
+            <li class="active"><a href="#" th:text="#{app.navigation.start}">Start</a></li>
+            <li><a href="#events" th:text="#{app.navigation.events}">Events</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -81,27 +81,37 @@
 			<div>
 				<div>
 					<div>
-			<form action="#" th:action="@{/ui/index.html}" th:object="${book}" method="POST" accept-charset="UTF-8">
+			<form action="#" th:action="@{/ui/mybooks/index.html}" th:object="${book}" method="POST" accept-charset="UTF-8">
 				<table class="table">
 					<thead>
 						<tr>
-							<th width="35%">Bokens/Tidningens titel</th>
-							<th width="20%">F&ouml;rfattare</th>
-							<th width="10%">Antal l&auml;sta sidor</th>
+							<th width="35%" th:text="#{label.title}">Title</th>
+							<th width="20%" th:text="#{label.author}">Author</th>
+							<th width="10%" th:text="#{label.pages}">Pages</th>
 							<th width="20%"></th>
 							<th width="15%"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td><input name="title" th:field="*{title}"/></td>
-							<td><input name="author" th:field="*{author}"/></td>
-							<td class="number"><input name="pages" size="5" class="number" th:field="*{pages}"/></td>
-							<td colspan="2"><button type="submit" name="saveBook" class="btn btn-success">L&auml;gg till bok</button></td>
+							<td>
+								<input name="title" th:field="*{title}"/>
+								<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
+							</td>
+							<td>
+								<input name="author" th:field="*{author}"/>
+								<div th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Error</div>
+							</td>
+							<td class="number">
+								<input name="pages" size="5" class="number" th:field="*{pages}"/><br/>
+								<div th:if="${#fields.hasErrors('pages')}" th:errors="*{pages}">Error</div>
+								
+							</td>
+							<td colspan="2"><button type="submit" name="saveBook" class="btn btn-success" th:text="#{label.btn.add}">Add</button></td>
 						</tr>
 						<tr th:each="book,iterStat : ${books}">
-							<td th:text="${book.title}">Pippi L&aring;ngstrump</td>
-							<td th:text="${book.author}">Astrid Lindgren</td>
+							<td th:text="${book.title}">Some book title</td>
+							<td th:text="${book.author}">The author</td>
 							<td class="number" th:text="${book.pages}">123</td>
 							<td>
 								<span class="star-rating" th:attr="data-bookid=${book.id}">
@@ -113,12 +123,12 @@
 								</span>
 							</td>
 							<td class="buttons">
-								<button type="submit" name="removeBook" class="btn btn-danger" th:value="${book.id}">Ta bort bok</button>
+								<button type="submit" name="removeBook" class="btn btn-danger" th:value="${book.id}" th:text="#{label.btn.remove}">Remove</button>
 							</td>
 						</tr>
 						<tr>
 							<td></td>
-							<td style="text-align:right; border-top:1pt solid black">Totalt antal sidor:</td>
+							<td style="text-align:right; border-top:1pt solid black" th:text="#{label.sum}">Sum</td>
 							<td class="number" th:text="${totalPages}" style="border-top:1pt solid black">123</td>
 							<td></td>
 							<td></td>
@@ -257,7 +267,7 @@ jQuery('.star-rating').rating(function(rate, e){
 	        'Content-Type': 'application/json' 
 	    },
 		method:"PUT",
-		url:`/api/books/${bookId}/rate`,
+		url:`/api/ratings/${bookId}`,
 		data:JSON.stringify({rate:rate}),
 		dataType:'json'
 	}).done(function(msg){

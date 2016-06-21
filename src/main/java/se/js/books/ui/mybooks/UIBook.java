@@ -1,4 +1,4 @@
-package se.js.books.ui.index;
+package se.js.books.ui.mybooks;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -5,11 +5,27 @@ import static se.js.books.util.DateUtil.format;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.format.annotation.NumberFormat.Style;
+
 public class Book {
 	private UUID id;
+	
+	@Size(min=1, max=100)
 	private String author;
+	
+	@Size(min=1, max=100)
 	private String title;
+	
+	@NotNull
+	@Min(1)
+	@NumberFormat(style = Style.NUMBER)
 	private Integer pages;
+
 	private LocalDate added;
 	private LocalDate removed;
 	

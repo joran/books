@@ -1,20 +1,24 @@
 package se.js.books.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class BookRatingRegistration {
-	private LocalDate date;
+	private LocalDateTime date;
 	private Book book;
 	private int rating=0;
 
+	public BookRatingRegistration() {
+		super();
+	}
+	
 	public BookRatingRegistration(Book book, int rating) {
 		super();
 		this.book = book;
 		this.rating = rating;
-		this.date = LocalDate.now();
+		this.date = LocalDateTime.now();
 	}
 
-	public LocalDate getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 

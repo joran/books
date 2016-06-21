@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -16,13 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import se.js.books.domain.Book;
-import se.js.books.domain.BookRating;
-import se.js.books.domain.BookRatingRegistration;
 import se.js.books.service.BookStoreService;
 
 @Controller
 @RequestMapping("/api/books")
-public class BooksController {
+public class BookController {
 
 	@Inject
 	BookStoreService bookstore;
@@ -65,29 +62,4 @@ public class BooksController {
 		bookstore.finishReadingBook(id);
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
-
-    @ResponseBody
-	@RequestMapping(value="/{id}/inc", method=RequestMethod.PUT)
-	public void incBookRating(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
-		bookstore.incRatingBook(id);
-		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-	}
-
-    @ResponseBody
-	@RequestMapping(value="/{id}/rate", method=RequestMethod.GET)
-	public BookRating getBookRate(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response){
-    	Optional<BookRatingRegistration> lastRating = bookstore.findLastRatingByBookId(id);
-		if(lastRating.isPresent()) {
-			return new BookRating(lastRating.get().getRating());
-		}
-		return new BookRating();
-    }
-    @ResponseBody
-	@RequestMapping(value="/{id}/rate", method=RequestMethod.PUT)
-	public BookRating rateBook(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response, @RequestBody BookRating rating){
-    	bookstore.rateBook(id, rating.getRate());
-		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-		return rating;
-    }
-    
 }
