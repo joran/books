@@ -29,10 +29,24 @@ import se.js.books.service.event.BookEvent;
 @Service
 public class EventService {
 	private static final String FILE_EVENTS_JSON = "events.json";
-	List<BookEvent> events = new ArrayList<>();
+	private List<BookEvent> events = new ArrayList<>();
+	private List<Consumer<BookEvent>> subscribers = new ArrayList<>();
 	
 	@Inject
 	private ObjectMapper mapper;
+	
+	public void subscribe(Consumer<BookEvent> subscriber){
+		subscribers.add(subscriber);
+		replay(subscriber);
+	}
+
+	public Consumer<BookEvent> withPersistence(Consumer<BookEvent> consumer) {
+		return withPublishToSubscriber(withMemoryCache(withFilePersistence(consumer)));
+	}
+	
+	public void replay(Consumer<BookEvent> consumer) {
+		events.stream().forEach(consumer);
+	}
 	
 	@PostConstruct
 	void init() {
@@ -61,14 +75,6 @@ public class EventService {
 		}
 	}
 
-	public Consumer<BookEvent> handleNewEvent(Consumer<BookEvent> consumer) {
-		return withEventCache(withEventPersistence(consumer));
-	}
-	
-	public void replay(Consumer<BookEvent> consumer) {
-		events.stream().forEach(consumer);
-	}
-	
 	private BookEvent bookEventFromJsonString(String jsonString) {
 		BookEvent event = null;
 		try {
@@ -78,15 +84,22 @@ public class EventService {
 		}
 		return event;
 	}
-	
-	private Consumer<BookEvent> withEventCache(Consumer<BookEvent> consumer) {
+
+	private Consumer<BookEvent> withPublishToSubscriber(Consumer<BookEvent> consumer){
+		return (BookEvent event) -> {
+			consumer.accept(event);
+			subscribers.stream()
+			.forEach(subscriber -> subscriber.accept(event));
+		};
+	}
+	private Consumer<BookEvent> withMemoryCache(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
 			consumer.accept(event);
 			events.add(event);
 		};
 	}
 	
-	private Consumer<BookEvent>  withEventPersistence(Consumer<BookEvent> consumer) {
+	private Consumer<BookEvent>  withFilePersistence(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
 			try(BufferedWriter out = new BufferedWriter(new FileWriter(FILE_EVENTS_JSON, true))){
 				consumer.accept(event);
@@ -100,4 +113,5 @@ public class EventService {
 			}
 		};
 	}
+	
 }

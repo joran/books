@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +22,94 @@ import se.js.books.service.event.BookEvent;
 
 @Service
 public class BookStoreService {
-	private static final String FILE_EVENTS_JSON = "events.json";
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(BookStoreService.class);
+	
+	@Inject
+	private EventService eventService;
+	
+	@Inject
+	private BookModel bookModel;
 	
 	List<Book> books = new ArrayList<>();
 	List<BookReadRegistration> booksRead = new ArrayList<>();
 	Map<UUID, List<BookRatingRegistration>> bookRatings = new HashMap<>();
 
 	
+	public List<Book> findAllAvailableBooks(){
+		return bookModel.findAllAvailableBooks();
+	}
+	
+	public Optional<Book> findById(UUID id) {
+		return bookModel.findById(id);
+	}
+	
+	public List<BookReadRegistration> buildReport(){
+		return booksRead;	
+	}
+	
+	public Map<UUID, List<BookRatingRegistration>> findAllRatings(){
+		return bookRatings;
+	}
+
+	public Optional<BookRatingRegistration> findLastRatingByBookId(UUID bookId){
+		List<BookRatingRegistration> ratings = bookRatings.get(bookId);
+		if(ratings == null) {
+			return Optional.empty();			
+		}
+		return ratings.stream().reduce((a,b) -> b);
+	}
+
+	public Book addNewBook(String author, String title, int pages) {
+		Book book = new Book(author, title, pages);
+		eventService.withPersistence(this::handleEvent).accept(BookEvent.created(book));
+		return book;
+	}
+	
+	public void removeBook(UUID id) {
+		Optional<Book> optBook = findById(id);
+		if(optBook.isPresent()) {
+			eventService.withPersistence(this::handleEvent).accept(BookEvent.removed(optBook.get()));
+		}
+	}
+	
+	public void finishReadingBook(UUID id){
+		Optional<Book> optBook = findById(id);
+		if(optBook.isPresent()) {
+			eventService.withPersistence(this::handleEvent).accept(BookEvent.read(optBook.get()));
+		}
+	}
+	
+	public void incRatingBook(UUID id) {
+		Optional<Book> optBook = findById(id);
+		if(optBook.isPresent()) {
+			eventService.withPersistence(this::handleEvent).accept(BookEvent.ratingIncremented(optBook.get()));
+		}
+	}
+	public Optional<BookRatingRegistration> rateBook(UUID id, int rating) {
+		Optional<Book> optBook = findById(id);
+		if(optBook.isPresent()) {
+			eventService.withPersistence(this::handleEvent).accept(BookEvent.rated(optBook.get(), rating));
+		}
+		return findLastRatingByBookId(id);
+	}
+	
+	@PostConstruct
+	public void reload() {
+		books.clear();
+		booksRead.clear();
+		eventService.replay(this::handleEvent);
+	}
+	
+	public List<BookEvent> getAllEvents(){
+		List<BookEvent> e = new ArrayList<BookEvent>();
+		eventService.replay(evt -> {
+			e.add(evt);
+			LOG.info("Event: " + evt);
+		});
+		return e;
+	}
 
 	private void handleEvent(BookEvent event) {
 		if(event == null) {
@@ -74,80 +154,5 @@ public class BookStoreService {
 		default:
 			break;	
 		}		
-	}
-	
-	public List<Book> findAllAvailableBooks(){
-		return books.stream()	
-				.filter	(book -> book.getRemoved() == null)
-				.collect(Collectors.toList());
-	}
-	
-	public Optional<Book> findById(UUID id) {
-		return books.stream()
-				.filter(book -> book.getId().equals(id))
-				.findFirst();
-	}
-	
-	public List<BookReadRegistration> buildReport(){
-		return booksRead;
-	}
-	
-	public Map<UUID, List<BookRatingRegistration>> findAllRatings(){
-		return bookRatings;
-	}
-
-	public Optional<BookRatingRegistration> findLastRatingByBookId(UUID bookId){
-		List<BookRatingRegistration> ratings = bookRatings.get(bookId);
-		if(ratings == null) {
-			return Optional.empty();			
-		}
-		return ratings.stream().reduce((a,b) -> b);
-	}
-
-	public Book addNewBook(String author, String title, int pages) {
-		Book book = new Book(author, title, pages);
-		handleNewEvent(BookEvent.created(book));
-		return book;
-	}
-	
-	public void removeBook(UUID id) {
-		Optional<Book> optBook = findById(id);
-		if(optBook.isPresent()) {
-			handleNewEvent(BookEvent.removed(optBook.get()));
-		}
-	}
-	
-	public void finishReadingBook(UUID id){
-		Optional<Book> optBook = findById(id);
-		if(optBook.isPresent()) {
-			handleNewEvent(BookEvent.read(optBook.get()));
-		}
-	}
-	
-	public void incRatingBook(UUID id) {
-		Optional<Book> optBook = findById(id);
-		if(optBook.isPresent()) {
-			handleNewEvent(BookEvent.ratingIncremented(optBook.get()));
-		}
-	}
-	public Optional<BookRatingRegistration> rateBook(UUID id, int rating) {
-		Optional<Book> optBook = findById(id);
-		if(optBook.isPresent()) {
-			handleNewEvent(BookEvent.rated(optBook.get(), rating));
-		}
-		return findLastRatingByBookId(id);
-	}
-	
-	public void reload() {
-		books.clear();
-		booksRead.clear();
-		events.stream().forEach(this::handleEvent);
-	}
-	
-	public List<BookEvent> getAllEvents(){
-		for (BookEvent bookEvent : events) {
-			LOG.info("Event: " + bookEvent);
-		}
-		return events;
 	}
 }
