@@ -15,25 +15,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import se.js.books.domain.Book;
-import se.js.books.service.BookStoreService;
+import se.js.books.service.BooksReadModel;
+import se.js.books.service.BooksWriteModel;
 
 @Controller
 @RequestMapping("/api/books")
 public class BookController {
 
 	@Inject
-	BookStoreService bookstore;
+	BooksWriteModel booksWriter;
+
+	@Inject
+	BooksReadModel booksProvider;
+	
 	
     @ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Book> findAll(){
-		return bookstore.findAllAvailableBooks();
+		return booksProvider.findAllAvailableBooks();
 	}
 	
     @ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public Book findBookByIdk(@PathVariable UUID id, HttpServletResponse response){
-		Optional<Book> optBook = bookstore.findById(id);
+		Optional<Book> optBook = booksProvider.findById(id);
 		Book book = null;
 		int status = HttpServletResponse.SC_NOT_FOUND;
 		if(optBook.isPresent()) {
@@ -47,19 +52,19 @@ public class BookController {
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.POST)
 	public Book addNewBook(@RequestBody Book b){
-    	return bookstore.addNewBook(b.getAuthor(), b.getTitle(), b.getPages());
+    	return booksWriter.addNewBook(b.getAuthor(), b.getTitle(), b.getPages());
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public void removeBook(@PathVariable UUID id, HttpServletResponse response){
-		bookstore.removeBook(id);
+		booksWriter.removeBook(id);
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 	
     @ResponseBody
 	@RequestMapping(value="/{id}/read", method=RequestMethod.PUT)
 	public void finishReadingBook(@PathVariable UUID id, HttpServletResponse response){
-		bookstore.finishReadingBook(id);
+		booksWriter.finishReadingBook(id);
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 }

@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import se.js.books.domain.Book;
-import se.js.books.service.BookStoreService;
+import se.js.books.service.BooksReadModel;
+import se.js.books.service.BooksWriteModel;
 
 @Controller
 @RequestMapping("/ui/mybooks")
@@ -28,7 +29,10 @@ public class MyBooksController {
 
 
 	@Inject
-	BookStoreService bookstore;
+	private BooksWriteModel bookstore;
+	
+	@Inject
+	private BooksReadModel books;
 	
 	@ModelAttribute("book")
 	private Book newBook(){
@@ -37,7 +41,7 @@ public class MyBooksController {
 
 	@ModelAttribute("books")
 	private List<UIBook> findAll(){
-		List<UIBook> bs = bookstore.findAllAvailableBooks().stream()
+		List<UIBook> bs = books.findAllAvailableBooks().stream()
 				.map(b -> new UIBook(b, bookstore.findLastRatingByBookId(b.getId())))
 				.collect(Collectors.toList());
 		return bs;
@@ -45,7 +49,7 @@ public class MyBooksController {
 
 	@ModelAttribute("totalPages")
 	private int sum(){
-		return bookstore.findAllAvailableBooks().stream().mapToInt(b -> b.getPages()).sum();
+		return books.findAllAvailableBooks().stream().mapToInt(b -> b.getPages()).sum();
 	}
 
 	@RequestMapping({"","/"})

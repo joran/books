@@ -2,7 +2,7 @@ package se.js.books.domain;
 
 import static se.js.books.util.DateUtil.format;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.validation.constraints.Min;
@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
 
-public class Book {
+public class Book implements RemovedAware,IdAware, AddedAware{
 	private UUID id;
 	
 	@Size(min=1, max=100)
@@ -26,14 +26,14 @@ public class Book {
 	@NumberFormat(style = Style.NUMBER)
 	private Integer pages;
 
-	private LocalDate added;
-	private LocalDate removed;
+	private LocalDateTime added;
+	private LocalDateTime removed;
 	
 	public Book() {
 		super();
 	}
 
-	Book(UUID id, String author, String title, int pages, LocalDate added, LocalDate removed) {
+	Book(UUID id, String author, String title, int pages, LocalDateTime added, LocalDateTime removed) {
 		this();
 		this.id = id;
 		this.author = author;
@@ -44,7 +44,7 @@ public class Book {
 	}
 
 	public Book(String author, String titel, Integer pages) {
-		this(UUID.randomUUID(), author, titel, pages, LocalDate.now(), null);
+		this(UUID.randomUUID(), author, titel, pages, LocalDateTime.now(), null);
 	}
 	
 	public UUID getId() {
@@ -75,19 +75,19 @@ public class Book {
 		this.pages = pages;
 	}
 
-	public LocalDate getAdded() {
+	public LocalDateTime getAdded() {
 		return added;
 	}
 
-	public void setAdded(LocalDate added) {
+	public void setAdded(LocalDateTime added) {
 		this.added = added;
 	}
 
-	public LocalDate getRemoved() {
+	public LocalDateTime getRemoved() {
 		return removed;
 	}
 
-	public void setRemoved(LocalDate removed) {
+	public void setRemoved(LocalDateTime removed) {
 		this.removed = removed;
 	}
 

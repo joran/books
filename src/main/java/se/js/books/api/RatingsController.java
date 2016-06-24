@@ -18,25 +18,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import se.js.books.domain.Book;
 import se.js.books.domain.BookRating;
 import se.js.books.domain.BookRatingRegistration;
-import se.js.books.service.BookStoreService;
+import se.js.books.service.BooksReadModel;
 
 @Controller
 @RequestMapping("/api/ratings")
 public class RatingsController {
 
 	@Inject
-	BookStoreService bookstore;
+	BooksReadModel booksProvider;
+	
 	
     @ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Book> findAll(){
-		return bookstore.findAllAvailableBooks();
+		return booksProvider.findAllAvailableBooks();
 	}
 	
     @ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public Book findRatingByBookId(@PathVariable UUID id, HttpServletResponse response){
-		Optional<Book> optBook = bookstore.findById(id);
+		Optional<Book> optBook = booksProvider.findById(id);
 		Book book = null;
 		int status = HttpServletResponse.SC_NOT_FOUND;
 		if(optBook.isPresent()) {
@@ -45,12 +46,6 @@ public class RatingsController {
 		}
 		response.setStatus(status);
 		return book;
-	}
-
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public void remove(@PathVariable UUID id, HttpServletResponse response){
-		bookstore.removeBook(id);
-		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 
     @ResponseBody

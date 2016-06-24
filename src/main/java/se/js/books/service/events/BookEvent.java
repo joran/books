@@ -1,4 +1,4 @@
-package se.js.books.service.event;
+package se.js.books.service.events;
 
 import java.time.LocalDateTime;
 

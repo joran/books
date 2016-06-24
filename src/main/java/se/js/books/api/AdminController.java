@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import se.js.books.domain.BookRatingRegistration;
 import se.js.books.domain.BookReadRegistration;
-import se.js.books.service.BookStoreService;
-import se.js.books.service.event.BookEvent;
+import se.js.books.service.BooksWriteModel;
+import se.js.books.service.events.BookEvent;
 
 @Controller
 @RequestMapping("/api/admin")
 public class AdminController {
 
 	@Inject
-	BookStoreService bookstore;
+	BooksWriteModel bookstore;
 	
     @ResponseBody
 	@RequestMapping(path="reload", method=RequestMethod.GET)

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.js.books.domain.Book;
-import se.js.books.service.event.BookEvent;
+import se.js.books.service.events.BookEvent;
 
 @Service
 public class EventService {

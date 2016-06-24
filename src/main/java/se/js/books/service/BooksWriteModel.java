@@ -1,6 +1,6 @@
 package se.js.books.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,32 +18,22 @@ import org.springframework.stereotype.Service;
 import se.js.books.domain.Book;
 import se.js.books.domain.BookRatingRegistration;
 import se.js.books.domain.BookReadRegistration;
-import se.js.books.service.event.BookEvent;
+import se.js.books.service.events.BookEvent;
 
 @Service
-public class BookStoreService {
+public class BooksWriteModel {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(BookStoreService.class);
+			.getLogger(BooksWriteModel.class);
 	
 	@Inject
 	private EventService eventService;
 	
-	@Inject
-	private BookModel bookModel;
-	
-	List<Book> books = new ArrayList<>();
+	MemorySnapshot<Book> books = new MemorySnapshot<>();
+
 	List<BookReadRegistration> booksRead = new ArrayList<>();
 	Map<UUID, List<BookRatingRegistration>> bookRatings = new HashMap<>();
 
-	
-	public List<Book> findAllAvailableBooks(){
-		return bookModel.findAllAvailableBooks();
-	}
-	
-	public Optional<Book> findById(UUID id) {
-		return bookModel.findById(id);
-	}
 	
 	public List<BookReadRegistration> buildReport(){
 		return booksRead;	
@@ -111,13 +101,18 @@ public class BookStoreService {
 		return e;
 	}
 
+	private Optional<Book> findById(UUID id){
+		if(id == null) return Optional.empty();
+		return books.stream().filter(b -> b.getId().equals(id)).findFirst();
+	}
+	
 	private void handleEvent(BookEvent event) {
 		if(event == null) {
 			return;
 		}
 		
 		Book book = event.getBook();
-		LocalDate now = LocalDate.now();
+		LocalDateTime now = LocalDateTime.now();
 		LOG.info("handleEvent: " + event );
 		switch (event.getType()) {
 		case CREATED:
@@ -127,29 +122,6 @@ public class BookStoreService {
 			books.stream()
 			.filter(b -> b.equals(book))
 			.forEach(b -> b.setRemoved(now));
-			break;
-		case READ:
-			booksRead.add(new BookReadRegistration(book));
-			break;
-		case RATED:
-			int rating = event.getRating();
-
-			List<BookRatingRegistration> ratings = bookRatings.get(book.getId());
-			if(ratings == null) {
-				ratings = new ArrayList<>();
-				bookRatings.put(book.getId(), ratings);
-			}
-			ratings.add(new BookRatingRegistration(book, rating));
-			break;
-		case RATING_INC:
-			List<BookRatingRegistration> _ratings = bookRatings.get(book.getId());
-			if(_ratings == null) {
-				_ratings = new ArrayList<>();
-				bookRatings.put(book.getId(), _ratings);
-			}
-			_ratings.add(new BookRatingRegistration(book, 1));
-			break;
-		case REVIEWED:
 			break;
 		default:
 			break;	

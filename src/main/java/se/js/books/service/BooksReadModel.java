@@ -1,11 +1,8 @@
 package se.js.books.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -15,29 +12,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import se.js.books.domain.Book;
-import se.js.books.service.event.BookEvent;
+import se.js.books.service.events.BookEvent;
 
 @Service
-public class BookModel {
+public class BooksReadModel {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(BookModel.class);
+			.getLogger(BooksReadModel.class);
 	
 	@Inject
 	private EventService eventService;
 	
-	List<Book> books = new ArrayList<>();
+	MemorySnapshot<Book> books = new MemorySnapshot<>();
 	
-	public List<Book> findAllAvailableBooks(){
-		return books.stream()	
-				.filter	(book -> book.getRemoved() == null)
-				.collect(Collectors.toList());
+	public Stream<Book> findAllAvailableBooks(){
+		return books.findAllNotRemoved();
 	}
 	
-	public Optional<Book> findById(UUID id) {
-		return books.stream()
-				.filter(book -> book.getId().equals(id))
-				.findFirst();
+	public Optional<Book> findUniqueById(UUID id) {
+		return books.findSomeById(id);
 	}
 	
 	@PostConstruct
@@ -51,15 +44,12 @@ public class BookModel {
 				LOG.info("Handle event " + event);
 				
 				Book book = event.getBook();
-				LocalDateTime occurred = event.getOccurred();
 				switch (event.getType()) {
 				case CREATED:
 					books.add(book);
 					break;
 				case REMOVED:
-					books.stream()
-					.filter(b -> b.equals(book))
-					.forEach(b -> b.setRemoved(occurred.toLocalDate()));
+					books.remove(book);
 					break;
 				default:
 					break;	
