@@ -1,28 +1,23 @@
 package se.js.books.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class BookRatingRegistration implements RemovedAware, IdAware{
-	private LocalDateTime date;
+public class BookRatingRegistration implements SnapshotEnabled {
 	private Book book;
-	private int rating=0;
-	private LocalDate removed;
+	private int rating = 0;
+	private LocalDateTime added;
+	private LocalDateTime removed;
 
 	public BookRatingRegistration() {
 		super();
 	}
-	
+
 	public BookRatingRegistration(Book book, int rating) {
 		super();
 		this.book = book;
 		this.rating = rating;
-		this.date = LocalDateTime.now();
-	}
-
-	public LocalDateTime getDate() {
-		return date;
+		this.added = LocalDateTime.now();
 	}
 
 	public Book getBook() {
@@ -33,15 +28,16 @@ public class BookRatingRegistration implements RemovedAware, IdAware{
 		this.rating = this.rating + 1;
 		return this.rating;
 	}
+
 	public int getRating() {
 		return rating;
 	}
 
-	public LocalDate getRemoved() {
+	public LocalDateTime getRemoved() {
 		return removed;
 	}
 
-	public void setRemoved(LocalDate removed) {
+	public void setRemoved(LocalDateTime removed) {
 		this.removed = removed;
 	}
 
@@ -50,4 +46,14 @@ public class BookRatingRegistration implements RemovedAware, IdAware{
 		return book.getId();
 	}
 
+	@Override
+	public LocalDateTime getAdded() {
+		return added;
+	}
+
+	@Override
+	public String toString() {
+		return "BookRatingRegistration [book=" + book + ", rating=" + rating + ", added=" + added + ", removed="
+				+ removed + "]";
+	}
 }

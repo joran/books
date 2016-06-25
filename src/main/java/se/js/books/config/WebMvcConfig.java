@@ -35,7 +35,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
-	
+
 	@Bean
 	public TemplateResolver templateResolver() {
 		ServletContextTemplateResolver resolver = new ServletContextTemplateResolver();
@@ -44,49 +44,48 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		resolver.setTemplateMode("HTML5");
 		return resolver;
 	}
-	
+
 	@Bean
 	public SpringTemplateEngine templateEngine() {
 		SpringTemplateEngine engine = new SpringTemplateEngine();
 		engine.setTemplateResolver(templateResolver());
 		return engine;
 	}
-	
+
 	@Bean
 	public ThymeleafViewResolver thymeleafViewResolver() {
 		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
 		resolver.setTemplateEngine(templateEngine());
 		resolver.setOrder(1);
-		resolver.setViewNames(new String[] {"*"});
+		resolver.setViewNames(new String[] { "*" });
 		return resolver;
 	}
 
 	@Bean
 	public MessageSource messageSource() {
-	    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-	    messageSource.setBasename("/i18/messages");
-	    messageSource.setDefaultEncoding("UTF-8");
-	    return messageSource;
-	} 
-	
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("/i18/messages");
+		messageSource.setDefaultEncoding("UTF-8");
+		return messageSource;
+	}
+
 	@Bean
-    public LocaleResolver localeResolver() {
-        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-        Locale defaultLocale = new Locale("sv");
-        localeResolver.setDefaultLocale(defaultLocale);
-        return localeResolver;
-    }
+	public LocaleResolver localeResolver() {
+		SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+		Locale defaultLocale = new Locale("sv");
+		localeResolver.setDefaultLocale(defaultLocale);
+		return localeResolver;
+	}
 
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor localeChangeInterceptor = new
-                LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("lang");
-        return localeChangeInterceptor;
-    }
+	@Bean
+	public LocaleChangeInterceptor localeChangeInterceptor() {
+		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+		localeChangeInterceptor.setParamName("lang");
+		return localeChangeInterceptor;
+	}
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
-    }
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(localeChangeInterceptor());
+	}
 }

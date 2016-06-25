@@ -18,76 +18,69 @@ import se.js.books.service.events.BookEvent;
 public class RatingsWriteModel {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory
-			.getLogger(RatingsWriteModel.class);
-	
+	private static final Logger LOG = LoggerFactory.getLogger(RatingsWriteModel.class);
+
 	@Inject
 	private EventService eventService;
-	
+
 	@Inject
 	private BooksReadModel books;
 
-	MemorySnapshot<BookRatingRegistration> bookRatings = new MemorySnapshot<>();
+	@Inject
+	private Snapshot<BookRatingRegistration> bookRatings;
 
-		
-	private Optional<BookRatingRegistration> findLastRatingByBookId(UUID bookId){
-		return bookRatings.findSomeById(bookId);
+	private Optional<BookRatingRegistration> findLastRatingByBookId(UUID bookId) {
+		return bookRatings.findById(bookId);
 	}
-	
+
 	public void incRatingBook(UUID id) {
 		Optional<Book> optBook = findBookById(id);
-		if(optBook.isPresent()) {
+		if (optBook.isPresent()) {
 			eventService.withPersistence(this::handleEvent).accept(BookEvent.ratingIncremented(optBook.get()));
 		}
 	}
+
 	public Optional<BookRatingRegistration> rateBook(UUID id, int rating) {
 		Optional<Book> optBook = findBookById(id);
-		if(optBook.isPresent()) {
+		if (optBook.isPresent()) {
 			eventService.withPersistence(this::handleEvent).accept(BookEvent.rated(optBook.get(), rating));
 			return findLastRatingByBookId(id);
 		}
 		return Optional.empty();
 	}
-	
+
 	@PostConstruct
-	private void setup() {
+	private void init() {
 		eventService.subscribe(this::handleEvent);
 	}
-	
-	public void reload() {
-		eventService.replay(this::handleEvent);
-	}
-	
 
-	private Optional<Book> findBookById(UUID id){
-		return books.findUniqueById(id);
+	private Optional<Book> findBookById(UUID id) {
+		return books.findSomeById(id);
 	}
-	
+
 	private void handleEvent(BookEvent event) {
-		if(event == null) {
-			return;
-		}
-		
-		Book book = event.getBook();
-		Optional<BookRatingRegistration> optRatingReg = bookRatings.findSomeById(book.getId());
-		switch (event.getType()) {
-		case RATED:
-			int rating = event.getRating();
+		if (event != null) {
+			Book book = event.getBook();
+			Optional<BookRatingRegistration> optRatingReg = bookRatings.findById(book.getId());
+			switch (event.getType()) {
+			case RATED:
+				int rating = event.getRating();
 
-			if(optRatingReg.isPresent()) {
-				bookRatings.remove(optRatingReg.get());
+				if (optRatingReg.isPresent()) {
+					bookRatings.remove(optRatingReg.get());
+				}
+				bookRatings.add(new BookRatingRegistration(book, rating));
+				break;
+			case RATING_INC:
+				if (optRatingReg.isPresent()) {
+					optRatingReg.get().incRating();
+				} else {
+					bookRatings.add(new BookRatingRegistration(book, 1));
+				}
+				break;
+			default:
+				break;
 			}
-			bookRatings.add(new BookRatingRegistration(book, rating));
-			break;
-		case RATING_INC:
-			if(optRatingReg.isPresent()) {
-				optRatingReg.get().incRating();
-			} else {
-				bookRatings.add(new BookRatingRegistration(book, 1));
-			}
-			break;
-		default:
-			break;	
-		}		
+		}
 	}
 }

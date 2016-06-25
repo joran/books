@@ -12,8 +12,8 @@ public class UIBook {
 	private String author;
 	private String title;
 	private Integer pages;
-	private int  rate=0;
-	
+	private int rate = 0;
+
 	public UIBook(Book book, BookRating rating) {
 		super();
 		this.id = book.getId();

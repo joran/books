@@ -3,6 +3,7 @@ package se.js.books.api;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -27,21 +28,20 @@ public class BookController {
 
 	@Inject
 	BooksReadModel booksProvider;
-	
-	
-    @ResponseBody
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Book> findAll(){
-		return booksProvider.findAllAvailableBooks();
+
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET)
+	public List<Book> findAll() {
+		return booksProvider.findAllAvailableBooks().collect(Collectors.toList());
 	}
-	
-    @ResponseBody
-	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public Book findBookByIdk(@PathVariable UUID id, HttpServletResponse response){
-		Optional<Book> optBook = booksProvider.findById(id);
+
+	@ResponseBody
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Book findBookByIdk(@PathVariable UUID id, HttpServletResponse response) {
+		Optional<Book> optBook = booksProvider.findSomeById(id);
 		Book book = null;
 		int status = HttpServletResponse.SC_NOT_FOUND;
-		if(optBook.isPresent()) {
+		if (optBook.isPresent()) {
 			book = optBook.get();
 			status = HttpServletResponse.SC_OK;
 		}
@@ -50,21 +50,14 @@ public class BookController {
 	}
 
 	@ResponseBody
-	@RequestMapping(method=RequestMethod.POST)
-	public Book addNewBook(@RequestBody Book b){
-    	return booksWriter.addNewBook(b.getAuthor(), b.getTitle(), b.getPages());
+	@RequestMapping(method = RequestMethod.POST)
+	public Book addNewBook(@RequestBody Book b) {
+		return booksWriter.addNewBook(b.getAuthor(), b.getTitle(), b.getPages());
 	}
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public void removeBook(@PathVariable UUID id, HttpServletResponse response){
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void removeBook(@PathVariable UUID id, HttpServletResponse response) {
 		booksWriter.removeBook(id);
-		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-	}
-	
-    @ResponseBody
-	@RequestMapping(value="/{id}/read", method=RequestMethod.PUT)
-	public void finishReadingBook(@PathVariable UUID id, HttpServletResponse response){
-		booksWriter.finishReadingBook(id);
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 }

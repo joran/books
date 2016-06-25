@@ -20,61 +20,69 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import se.js.books.domain.Book;
 import se.js.books.service.BooksReadModel;
 import se.js.books.service.BooksWriteModel;
+import se.js.books.service.RatingsReadModel;
+import se.js.books.service.RatingsWriteModel;
 
 @Controller
 @RequestMapping("/ui/mybooks")
 public class MyBooksController {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(MyBooksController.class);
-
+	@SuppressWarnings("unused")
+	private static final Logger LOG = LoggerFactory.getLogger(MyBooksController.class);
 
 	@Inject
-	private BooksWriteModel bookstore;
-	
+	private BooksWriteModel booksWriter;
+
 	@Inject
-	private BooksReadModel books;
-	
+	private BooksReadModel booksProvider;
+
+	@Inject
+	RatingsReadModel ratingsProvider;
+
+	@Inject
+	RatingsWriteModel ratingsWriter;
+
 	@ModelAttribute("book")
-	private Book newBook(){
+	private Book newBook() {
 		return new Book();
 	}
 
 	@ModelAttribute("books")
-	private List<UIBook> findAll(){
-		List<UIBook> bs = books.findAllAvailableBooks().stream()
-				.map(b -> new UIBook(b, bookstore.findLastRatingByBookId(b.getId())))
+	public List<UIBook> findAll() {
+		return booksProvider
+				.findAllAvailableBooks()
+				.map(b -> new UIBook(b, ratingsProvider.findByBookId(b.getId())))
 				.collect(Collectors.toList());
-		return bs;
 	}
 
 	@ModelAttribute("totalPages")
-	private int sum(){
-		return books.findAllAvailableBooks().stream().mapToInt(b -> b.getPages()).sum();
+	private int sum() {
+		return booksProvider.findAllAvailableBooks().mapToInt(b -> b.getPages()).sum();
 	}
 
-	@RequestMapping({"","/"})
-	public String _index(){
+	@RequestMapping({ "", "/" })
+	public String _index() {
 		return "redirect:/ui/mybooks/index.html";
 	}
 
 	@RequestMapping("/index.html")
-	public String index(Model model){
+	public String index(Model model) {
 		return "index";
 	}
 
-	@RequestMapping(value="/index.html", params= {"saveBook"})
-	public String save(@Valid final Book book, final BindingResult bindingResult){
-		if(bindingResult.hasErrors()) {
+	@RequestMapping(value = "/index.html", params = { "saveBook" })
+	public String save(@Valid final Book book, final BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
 			return "index";
 		}
-		this.bookstore.addNewBook(book.getAuthor(), book.getTitle(), book.getPages());
+		this.booksWriter.addNewBook(book.getAuthor(), book.getTitle(), book.getPages());
 		return "redirect:/ui/mybooks/index.html";
 	}
-	
-	@RequestMapping(value="/index.html", params= {"removeBook"})
-	public String remove(final Book book, final BindingResult bindingResult, final HttpServletRequest req, final ModelMap model){
+
+	@RequestMapping(value = "/index.html", params = { "removeBook" })
+	public String remove(final Book book, final BindingResult bindingResult, final HttpServletRequest req,
+			final ModelMap model) {
 		UUID id = UUID.fromString(req.getParameter("removeBook"));
-		this.bookstore.removeBook(id);
+		this.booksWriter.removeBook(id);
 		model.clear();
 		return "redirect:/ui/mybooks/index.html";
 	}

@@ -6,16 +6,19 @@ import se.js.books.domain.Book;
 import se.js.books.util.DateUtil;
 
 public class BookEvent {
-	public enum Type {CREATED, REMOVED, READ, RATED, REVIEWED, RATING_INC};
+	public enum Type {
+		CREATED, REMOVED, READ, RATED, REVIEWED, RATING_INC
+	};
+
 	public static int RATE_UNRATED = 0;
 
 	private Type type;
 	private LocalDateTime occurred;
-	
+
 	private Book book;
 	private String review = "";
 	private int rating = RATE_UNRATED;
-	
+
 	private BookEvent() {
 		super();
 	}
@@ -30,7 +33,7 @@ public class BookEvent {
 		this(type);
 		this.book = book;
 	}
-	
+
 	public BookEvent(Type type, Book book, int rate) {
 		this(type, book);
 		this.rating = rate;
@@ -87,8 +90,8 @@ public class BookEvent {
 
 	@Override
 	public String toString() {
-		return "BookEvent [type=" + type + ", occurred=" + DateUtil.format(occurred) + ", book=" + book + ", review=" + review
-				+ ", rating=" + rating + "]";
+		return "BookEvent [type=" + type + ", occurred=" + DateUtil.format(occurred) + ", book=" + book + ", review="
+				+ review + ", rating=" + rating + "]";
 	}
-	
+
 }

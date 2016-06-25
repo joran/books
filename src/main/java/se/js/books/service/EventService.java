@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,14 +30,17 @@ import se.js.books.service.events.BookEvent;
 
 @Service
 public class EventService {
+	@SuppressWarnings("unused")
+	private static final Logger LOG = LoggerFactory.getLogger(EventService.class);
+
 	private static final String FILE_EVENTS_JSON = "events.json";
 	private List<BookEvent> events = new ArrayList<>();
 	private List<Consumer<BookEvent>> subscribers = new ArrayList<>();
-	
+
 	@Inject
 	private ObjectMapper mapper;
-	
-	public void subscribe(Consumer<BookEvent> subscriber){
+
+	public void subscribe(Consumer<BookEvent> subscriber) {
 		subscribers.add(subscriber);
 		replay(subscriber);
 	}
@@ -43,35 +48,34 @@ public class EventService {
 	public Consumer<BookEvent> withPersistence(Consumer<BookEvent> consumer) {
 		return withPublishToSubscriber(withMemoryCache(withFilePersistence(consumer)));
 	}
-	
+
 	public void replay(Consumer<BookEvent> consumer) {
 		events.stream().forEach(consumer);
 	}
-	
+
 	@PostConstruct
 	void init() {
 		File file = new File(FILE_EVENTS_JSON);
-		if(file.exists()) {
-			try(BufferedReader in = new BufferedReader(new FileReader(file))){
-				events = in.lines()
-				.map(this::bookEventFromJsonString)
-				.collect(Collectors.toList());
+		if (file.exists()) {
+			LOG.info("Reading events from file: " + file.getAbsolutePath());
+			try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+				events = in.lines().map(this::bookEventFromJsonString).collect(Collectors.toList());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		if(events.isEmpty()) {
-			Book[] books = new Book[] {
-					new Book("Astrid Lindgren", "Pippi Långstrump", 55),
+		if (events.isEmpty()) {
+			Book[] books = new Book[] { new Book("Astrid Lindgren", "Pippi Långstrump", 55),
 					new Book("J.K. Rawlings", "De vises sten", 385),
-					new Book("J.K. Rawlings", "Den flammande bägaren", 463)
-			};
-			
-			events = concat(stream(books)
-					.map(book -> BookEvent.created(book)),
-					of(BookEvent.rated(books[0], 1)))
+					new Book("J.K. Rawlings", "Den flammande bägaren", 463) };
+
+			events = concat(stream(books).map(book -> BookEvent.created(book)), of(BookEvent.rated(books[0], 1)))
 					.collect(Collectors.toList());
+
+			events.stream().forEach(withFilePersistence(evt -> {
+				LOG.info("Writing initial events to file: " + evt);
+			}));
 		}
 	}
 
@@ -85,23 +89,23 @@ public class EventService {
 		return event;
 	}
 
-	private Consumer<BookEvent> withPublishToSubscriber(Consumer<BookEvent> consumer){
+	private Consumer<BookEvent> withPublishToSubscriber(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
 			consumer.accept(event);
-			subscribers.stream()
-			.forEach(subscriber -> subscriber.accept(event));
+			subscribers.stream().forEach(subscriber -> subscriber.accept(event));
 		};
 	}
+
 	private Consumer<BookEvent> withMemoryCache(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
 			consumer.accept(event);
 			events.add(event);
 		};
 	}
-	
-	private Consumer<BookEvent>  withFilePersistence(Consumer<BookEvent> consumer) {
+
+	private Consumer<BookEvent> withFilePersistence(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
-			try(BufferedWriter out = new BufferedWriter(new FileWriter(FILE_EVENTS_JSON, true))){
+			try (BufferedWriter out = new BufferedWriter(new FileWriter(FILE_EVENTS_JSON, true))) {
 				consumer.accept(event);
 				out.write(mapper.writeValueAsString(event));
 				out.newLine();
@@ -113,5 +117,5 @@ public class EventService {
 			}
 		};
 	}
-	
+
 }

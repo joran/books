@@ -12,15 +12,15 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
 
-public class Book implements RemovedAware,IdAware, AddedAware{
+public class Book implements SnapshotEnabled {
 	private UUID id;
-	
-	@Size(min=1, max=100)
+
+	@Size(min = 1, max = 100)
 	private String author;
-	
-	@Size(min=1, max=100)
+
+	@Size(min = 1, max = 100)
 	private String title;
-	
+
 	@NotNull
 	@Min(1)
 	@NumberFormat(style = Style.NUMBER)
@@ -28,7 +28,7 @@ public class Book implements RemovedAware,IdAware, AddedAware{
 
 	private LocalDateTime added;
 	private LocalDateTime removed;
-	
+
 	public Book() {
 		super();
 	}
@@ -46,7 +46,7 @@ public class Book implements RemovedAware,IdAware, AddedAware{
 	public Book(String author, String titel, Integer pages) {
 		this(UUID.randomUUID(), author, titel, pages, LocalDateTime.now(), null);
 	}
-	
+
 	public UUID getId() {
 		return id;
 	}
@@ -118,8 +118,8 @@ public class Book implements RemovedAware,IdAware, AddedAware{
 
 	@Override
 	public String toString() {
-		return "Book [id=" + id + ", author=" + author + ", title=" + title + ", pages=" + pages + ", added=" + format(added)
-				+ ", removed=" + format(removed) + "]";
+		return "Book [id=" + id + ", author=" + author + ", title=" + title + ", pages=" + pages + ", added="
+				+ format(added) + ", removed=" + format(removed) + "]";
 	}
-	
+
 }
