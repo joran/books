@@ -5,7 +5,7 @@
     <groupId>books</groupId>
     <artifactId>books</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>books</name>
 
     <parent>
@@ -45,7 +45,6 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        
         <dependency>
     		<groupId>com.fasterxml.jackson.datatype</groupId>
     		<artifactId>jackson-datatype-jsr310</artifactId>
