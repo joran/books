@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import se.js.books.config.ApplicationProperties;
 import se.js.books.domain.Book;
 import se.js.books.service.events.BookEvent;
 
@@ -33,12 +34,14 @@ public class EventService {
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(EventService.class);
 
-	private static final String FILE_EVENTS_JSON = "events.json";
 	private List<BookEvent> events = new ArrayList<>();
 	private List<Consumer<BookEvent>> subscribers = new ArrayList<>();
 
 	@Inject
 	private ObjectMapper mapper;
+	
+	@Inject
+	private ApplicationProperties props;
 
 	public void subscribe(Consumer<BookEvent> subscriber) {
 		subscribers.add(subscriber);
@@ -55,7 +58,7 @@ public class EventService {
 
 	@PostConstruct
 	void init() {
-		File file = new File(FILE_EVENTS_JSON);
+		File file = new File(props.getEventsFile());
 		if (file.exists()) {
 			LOG.info("Reading events from file: " + file.getAbsolutePath());
 			try (BufferedReader in = new BufferedReader(new FileReader(file))) {
@@ -65,7 +68,9 @@ public class EventService {
 			}
 		}
 
-		if (events.isEmpty()) {
+		if (props.isTestDataEnabled() && events.isEmpty()) {
+			LOG.info("Writing initial events to file: " + file.getAbsolutePath());
+
 			Book[] books = new Book[] { new Book("Astrid Lindgren", "Pippi Långstrump", 55),
 					new Book("J.K. Rawlings", "De vises sten", 385),
 					new Book("J.K. Rawlings", "Den flammande bägaren", 463) };
@@ -74,7 +79,7 @@ public class EventService {
 					.collect(Collectors.toList());
 
 			events.stream().forEach(withFilePersistence(evt -> {
-				LOG.info("Writing initial events to file: " + evt);
+				LOG.info("Adding event to file: " + evt);
 			}));
 		}
 	}
@@ -105,7 +110,7 @@ public class EventService {
 
 	private Consumer<BookEvent> withFilePersistence(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
-			try (BufferedWriter out = new BufferedWriter(new FileWriter(FILE_EVENTS_JSON, true))) {
+			try (BufferedWriter out = new BufferedWriter(new FileWriter(props.getEventsFile(), true))) {
 				consumer.accept(event);
 				out.write(mapper.writeValueAsString(event));
 				out.newLine();
