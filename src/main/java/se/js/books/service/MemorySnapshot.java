@@ -107,4 +107,9 @@ public class MemorySnapshot<T extends SnapshotEnabled> implements Snapshot<T> {
 		LOG.info("===============================================");
 	}
 
+	@Override
+	public void save(T t) {
+		// Update item in storage (usefull if stored items are persisted)
+	}
+
 }

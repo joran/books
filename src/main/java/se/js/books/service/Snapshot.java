@@ -5,16 +5,17 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import se.js.books.domain.IdAware;
-import se.js.books.domain.RemovedAware;
+import se.js.books.domain.SnapshotEnabled;
 
-public interface Snapshot<T extends RemovedAware & IdAware> {
+public interface Snapshot<T extends SnapshotEnabled> {
 
 	void add(T t);
 
 	void remove(T t);
 
 	void remove(UUID id);
+	
+	void save(T t);
 
 	Optional<T> findById(UUID id);
 

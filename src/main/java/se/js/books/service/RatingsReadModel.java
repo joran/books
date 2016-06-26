@@ -50,14 +50,14 @@ public class RatingsReadModel {
 				break;
 			case RATED:
 				int rating = event.getRating();
-				bookRatings.remove(book.getId());
-				bookRatings.add(new BookRatingRegistration(book, rating));
+				BookRatingRegistration _rating = bookRatings.findById(book.getId()).orElse(new BookRatingRegistration(book, 0));
+				_rating.setRating(rating);
+				bookRatings.save(_rating);
 				break;
 			case RATING_INC:
-				Optional<BookRatingRegistration> _ratings = bookRatings.findById(book.getId());
-				int newRating = _ratings.map(r -> r.getRating() + 1).orElse(1);
-				bookRatings.remove(book.getId());
-				bookRatings.add(new BookRatingRegistration(book, newRating));
+				BookRatingRegistration _rating1 = bookRatings.findById(book.getId()).orElse(new BookRatingRegistration(book, 0));
+				_rating1.incRating();
+				bookRatings.save(_rating1);
 				break;
 			default:
 				break;
