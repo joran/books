@@ -33,10 +33,16 @@ public class BookRatingRegistration implements SnapshotEnabled {
 		return rating;
 	}
 
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
+	@Override
 	public LocalDateTime getRemoved() {
 		return removed;
 	}
 
+	@Override
 	public void setRemoved(LocalDateTime removed) {
 		this.removed = removed;
 	}
@@ -46,7 +52,6 @@ public class BookRatingRegistration implements SnapshotEnabled {
 		return book.getId();
 	}
 
-	@Override
 	public LocalDateTime getAdded() {
 		return added;
 	}

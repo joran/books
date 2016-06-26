@@ -8,6 +8,7 @@ import se.js.books.domain.SnapshotEnabled;
 import se.js.books.service.BooksReadModel;
 import se.js.books.service.BooksWriteModel;
 import se.js.books.service.MemorySnapshot;
+import se.js.books.service.MyBooksReadModel;
 import se.js.books.service.RatingsReadModel;
 import se.js.books.service.RatingsWriteModel;
 import se.js.books.service.Snapshot;
@@ -37,6 +38,12 @@ public class ApplicationConfig {
 	@Scope("prototype")
 	public RatingsWriteModel ratingsWriteModel() {
 		return new RatingsWriteModel();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public MyBooksReadModel myBooksReadModel() {
+		return new MyBooksReadModel();
 	}
 
 	@Bean

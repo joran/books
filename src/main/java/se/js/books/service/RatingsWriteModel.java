@@ -59,22 +59,17 @@ public class RatingsWriteModel {
 	private void handleEvent(BookEvent event) {
 		if (event != null) {
 			Book book = event.getBook();
-			Optional<BookRatingRegistration> optRatingReg = bookRatings.findById(book.getId());
 			switch (event.getType()) {
 			case RATED:
 				int rating = event.getRating();
-
-				if (optRatingReg.isPresent()) {
-					bookRatings.remove(optRatingReg.get());
-				}
-				bookRatings.add(new BookRatingRegistration(book, rating));
+				BookRatingRegistration _rating = bookRatings.findById(book.getId()).orElse(new BookRatingRegistration(book, 0));
+				_rating.setRating(rating);
+				bookRatings.save(_rating);
 				break;
 			case RATING_INC:
-				if (optRatingReg.isPresent()) {
-					optRatingReg.get().incRating();
-				} else {
-					bookRatings.add(new BookRatingRegistration(book, 1));
-				}
+				BookRatingRegistration _rating1 = bookRatings.findById(book.getId()).orElse(new BookRatingRegistration(book, 0));
+				_rating1.incRating();
+				bookRatings.save(_rating1);
 				break;
 			default:
 				break;
