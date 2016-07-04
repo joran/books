@@ -1,0 +1,449 @@
+<!DOCTYPE HTML>
+    <html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title th:text="#{app.title}">Title</title>
+    <meta charset="UTF-8" />
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"/>
+	
+   <style>
+	      body { padding-top: 60px;font-family:Comic Sans MS}
+	      .navbar-brand{font-family:Comic Sans MS; letter-spacing:3px}
+	      .navbar-brand::first-letter{font-size: 140%; font-weight:bold;color:orange}
+	      th,td{padding: 10px 3px 5px 2px;white-space: nowrap}
+	      .number{text-align:right}
+	      input{width:100%}
+      	  .timeline{
+      	 	margin-bottom: 0px
+      	 }
+      	 .timeline .star-rating {
+      	 	padding-top: 10px;
+      	 }
+      	 .timeline .author {
+      	 	padding-top: 10px;
+      	 	margin-bottom: 0px
+      	 }
+      	 
+      	.timeline {
+    list-style: none;
+    padding: 20px 0 20px;
+    position: relative;
+}
+.timeline:before {
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    content:" ";
+    width: 3px;
+    background-color: #eeeeee;
+    left: 50%;
+    margin-left: -1.5px;
+}
+.timeline > li {
+    margin-bottom: 20px;
+    position: relative;
+}
+.timeline > li:before, .timeline > li:after {
+    content:" ";
+    display: table;
+}
+.timeline > li:after {
+    clear: both;
+}
+.timeline > li:before, .timeline > li:after {
+    content:" ";
+    display: table;
+}
+.timeline > li:after {
+    clear: both;
+}
+.timeline > li > .timeline-panel {
+    width: 45%;
+    float: left;
+    border: 1px solid #d4d4d4;
+    border-radius: 2px;
+    padding: 20px;
+    position: relative;
+    -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+}
+.timeline > li > .timeline-panel:before {
+    position: absolute;
+    top: 26px;
+    right: -15px;
+    display: inline-block;
+    border-top: 15px solid transparent;
+    border-left: 15px solid #ccc;
+    border-right: 0 solid #ccc;
+    border-bottom: 15px solid transparent;
+    content:" ";
+}
+.timeline > li > .timeline-panel:after {
+    position: absolute;
+    top: 27px;
+    right: -14px;
+    display: inline-block;
+    border-top: 14px solid transparent;
+    border-left: 14px solid #fff;
+    border-right: 0 solid #fff;
+    border-bottom: 14px solid transparent;
+    content:" ";
+}
+.timeline > li > .timeline-badge {
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 1.4em;
+    text-align: center;
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    margin-left: -25px;
+    background-color: #999999;
+    z-index: 100;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+.timeline > li.timeline-inverted > .timeline-panel {
+    float: right;
+}
+.timeline > li.timeline-inverted > .timeline-panel:before {
+    border-left-width: 0;
+    border-right-width: 15px;
+    left: -15px;
+    right: auto;
+}
+.timeline > li.timeline-inverted > .timeline-panel:after {
+    border-left-width: 0;
+    border-right-width: 14px;
+    left: -14px;
+    right: auto;
+}
+.timeline-badge.primary {
+    background-color: #2e6da4 !important;
+}
+.timeline-badge.success {
+    background-color: #3f903f !important;
+}
+.timeline-badge.warning {
+    background-color: #f0ad4e !important;
+}
+.timeline-badge.danger {
+    background-color: #d9534f !important;
+}
+.timeline-badge.info {
+    background-color: #5bc0de !important;
+}
+.timeline-title {
+    margin-top: 0;
+    color: inherit;
+}
+.timeline-body > p, .timeline-body > ul {
+    margin-bottom: 0;
+}
+.timeline-body > p + p {
+    margin-top: 5px;
+}
+
+.timeline-body > h5 {
+	margin-bottom: 0px;
+}
+
+@media (max-width: 767px) {
+    ul.timeline:before {
+        left: 40px;
+    }
+    ul.timeline > li > .timeline-panel {
+        width: calc(100% - 90px);
+        width: -moz-calc(100% - 90px);
+        width: -webkit-calc(100% - 90px);
+    }
+    ul.timeline > li > .timeline-badge {
+        left: 15px;
+        margin-left: 0;
+        top: 16px;
+    }
+    ul.timeline > li > .timeline-panel {
+        float: right;
+    }
+    ul.timeline > li > .timeline-panel:before {
+        border-left-width: 0;
+        border-right-width: 15px;
+        left: -15px;
+        right: auto;
+    }
+    ul.timeline > li > .timeline-panel:after {
+        border-left-width: 0;
+        border-right-width: 14px;
+        left: -14px;
+        right: auto;
+    }
+}
+
+		.star{
+		    background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAABQCAYAAAAZQFV3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABOFJREFUeNrsmEFoHFUYx9/MdHfTJRKzUhBaFiL1YghZCFQUIV6UQJuLWCgr8eKpIoiFSqsHQYrmYj14KHqxKAl6MbA5eCgKRVAMBhpCwIJQCETRQzTsNtnO7s74+17fbGc3M7OzZhUsHfjzdvd97/++973vff99Y/m+rwb5WL0Idz60h2nckTc8Nw2hncLmAnhtIB7i3VGan8VD8Dhebh+U8FOaX8Bh4EB48R8TQlai+QnkgMTxD/AYpFt9EULk0EyBD8Dn4BPT9TZ4CrwD6Wos4V+XrUdpXzQk4tUEkAFXwNUu+1fAWWO7anADLDLJTkCYpf0K3DQe3Ui5oUI6B8ShlyBstZfMMiXoX4MV8GZKQgnJcXA6nKPtGJoE/gZ8Cy6mIJPwnIJsL3ZTIB2h+U6WANZjyE6Aj8Cz3WT7TooJ7HUwneDdc+BaFFnc0SuCzQTCTWOT+iwfN6cjWJ6clo9NzOS5Bcb6IZTZj5pU+syEYNV8XzA2Y6lOCptyhGbDeDFPnJa6TlGZ5rxJ/nxkSRPCACR5EUyHf4sCNjOgENVn/ecVe+CEy8vLWgJmZ2fd1IRra2vxSbe5eYlmu1gsXo6zmZycTKcpkEn6vC61kM+FQYiUeDdvauP5Ay0ZjyIlgKVv9bVkiBwQVJRX2YwWkKLxrhxB+qYSPaxUKrESANHVrh2PlQAzqSbskAA6UkkA5B0SICvRSzb5ddrMWu4jh8umSLwckLVjSKClWJ6SwsrM76fwLpCAM4x1I9OGjhrN8+AkAyYSyGTDnhEHjCPxeYhBagmIIvtXJOBQkgSY5Z01/76umAy4lbpiG5IqzQuG6Alz9LLmf+IP5hh+AfmxnoSQdUgAg5a6JuuQgMiSFi7fJHkR9JQAbGbA/SoBi4uLWgLK5XIqCdBpkyQBZne3sTm4BGxsbLQlgM+DkYBsNjucyWQKaSXATvCuZFnWHIQqlxMVUOeMx/0RMsgBWgIgcyBVgqwwIwH0JUvAwsJChwQwuOQ4jrJtO/CsfQBc11We56lWqyXfOySALNgJdlmuWzNSB/P5vBKyyJnxMjxBs9mc2tvbEye+DN1l7uYhuaZvAXg1LaQyOOkRL3d3d8XLishHOEd1DMfHx7UEYLjCrCop2aXP2Mht4QxjoyWADi0BxGddZm80GjpWYSL5TfpkYnHAOBK/yxhoCZAl1et1PbharWrUajX9m/SJBESRJUlAr6fvW0CvZyyxOIQPN4kbnv1mlwQERGPhMbHli/Q5Yv5lSdDnSYelrlLWIQGRJS1cvjk1RdBTArCZAferBPT7IkjvcuP7t3pKADaxEpB5+r10FXv3x3kKqqUlgM+DkQB76OFhKzdycAnAo5KynTlraFTZQ4/gqH3ursd9EjLIAVoC7KGCAxFWNqSjWgLoS5aAfS+C7EzJcrLKOjSkrNwoFu0ToPz6n8pv3dFQXjPyRdA9CbDsk/ZDx5SQxWiAsg4X7vE361NedQsn/P0SELwIgmzaHiZMtpMcKK+pWlUuVF6j0v0iSMcw/+QFLQF+y13xbv/GpF4CWUt5tV+FTEsAY6MlgA4tASxlnaUo362yLGLlh2Lo1iCjj4nFAeNI/H9sDHbYxesEfcK//XvSoq9Fkf0/JCDqDWfV3I+TJGCLne19CzAvgtoS8OBF0APC6OdvAQYAj2xzC/IfXBsAAAAASUVORK5CYII=');
+		    background-position:left -2px;
+		    display:block;
+		    width:20px;
+		    height:16px;
+		    line-height:16px;
+		    float:left;
+		    cursor: pointer;
+		    zoom:1;
+		}
+		
+		.fullStar{
+		    background-position:left -59px;
+		}
+		
+		.stars{
+		    overflow: hidden;
+		}
+		
+		.tmp_es{
+		    background-position:left -21px;
+		}
+		
+		.tmp_fs{
+		    background-position:left -40px;
+		}      
+    </style>  
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	
+</head>
+<body>
+   <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand text-uppercase" href="#" th:text="#{app.title}">Title</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/ui/mybooks" th:text="#{app.navigation.start}">Start</a></li>
+            <li class="active"><a href="/ui/myevents" th:text="#{app.navigation.events}">Events</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<div class="container">
+    <div class="page-header">
+        
+<h1 id="timeline">Timeline</h1>
+
+    </div>
+    <ul class="timeline" th:each="event,iterStat : ${events}">
+        <li th:class="${iterStat.odd}?'timeline-inverted'">
+            <div class="timeline-badge"><i class="glyphicon" th:classappend="${event.uiIconClass}"></i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+					<h4 class="timeline-title" th:text="${event.header}">Mussum ipsum cacilds</h4>
+                    <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> <span th:text="${event.eventOccurred}">11 hours ago via Twitter</span></small>
+                    </p>
+                </div>
+                <div class="timeline-body">
+               		<h5 th:text="${event.bookTitle}">Some book title</h5>
+               		<small  class="text-muted author" th:text="${event.bookAuthor}">The author of the book</small>
+					<div class="star-rating" th:if="${event.eventType.toString() == 'RATED'}" th:attr="data-bookid=${event.id}">
+					  <input type="radio" value="1" th:checked="${event.rating == 1}"/>
+					  <input type="radio" value="2" th:checked="${event.rating == 2}"/>
+					  <input type="radio" value="3" th:checked="${event.rating == 3}"/>
+					  <input type="radio" value="4" th:checked="${event.rating == 4}"/>
+					  <input type="radio" value="5" th:checked="${event.rating == 5}"/>
+               		</div>
+	
+                </div>
+            </div>
+        </li>
+        <!-- 
+        <li>
+            <div class="timeline-badge"><i class="glyphicon glyphicon-book"></i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+					<h4 class="timeline-title">Mussum ipsum cacilds</h4>
+                    <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> 11 hours ago via Twitter</small>
+                    </p>
+                </div>
+                <div class="timeline-body">
+                    <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+                </div>
+            </div>
+        </li>
+        <li class="timeline-inverted">
+            <div class="timeline-badge warning"><i class="glyphicon glyphicon-star"></i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+					<h4 class="timeline-title">Mussum ipsum cacilds</h4>
+                </div>
+                <div class="timeline-body">
+                    <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+                    <p>Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Interagi no mé, cursus quis, vehicula ac nisi. Aenean vel dui dui. Nullam leo erat, aliquet quis tempus a, posuere ut mi. Ut scelerisque neque et turpis posuere pulvinar pellentesque nibh ullamcorper. Pharetra in mattis molestie, volutpat elementum justo. Aenean ut ante turpis. Pellentesque laoreet mé vel lectus scelerisque interdum cursus velit auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac mauris lectus, non scelerisque augue. Aenean justo massa.</p>
+                </div>
+            </div>
+        </li>
+        <li class="timeline-inverted">
+            <div class="timeline-badge warning"><i class="glyphicon glyphicon-star"></i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+					<h4 class="timeline-title">Mussum ipsum cacilds</h4>
+                </div>
+                <div class="timeline-body">
+                    <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+                    <p>Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Interagi no mé, cursus quis, vehicula ac nisi. Aenean vel dui dui. Nullam leo erat, aliquet quis tempus a, posuere ut mi. Ut scelerisque neque et turpis posuere pulvinar pellentesque nibh ullamcorper. Pharetra in mattis molestie, volutpat elementum justo. Aenean ut ante turpis. Pellentesque laoreet mé vel lectus scelerisque interdum cursus velit auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac mauris lectus, non scelerisque augue. Aenean justo massa.</p>
+                </div>
+            </div>
+        </li>
+         -->
+    </ul>
+</div>
+
+
+    <script>
+    (function($){
+    $.fn.rating = function(callback){
+        
+        callback = callback || function(){};
+
+        // each for all item
+        this.each(function(i, v){
+            
+            $(v).data('rating', {callback:callback})
+                .bind('init.rating', $.fn.rating.init)
+                .bind('set.rating', $.fn.rating.set)
+                .bind('hover.rating', $.fn.rating.hover)
+                .trigger('init.rating');
+        });
+    };
+    
+    $.extend($.fn.rating, {
+        init: function(e){
+            var el = $(this),
+                list = '',
+                isChecked = null,
+                childs = el.children(),
+                l = childs.length,
+				bookId = el.data("bookid");
+				
+              for (var i = 0; i != l; i++) {
+		                list = list + '<a class="star" title="' + $(childs[i]).val() + '" data-bookid="' + bookId +'" />';
+		                if ($(childs[i]).is(':checked')) {
+		                    isChecked = $(childs[i]).val();
+		                };
+                };
+            
+            childs.hide();
+            
+            el.append('<div class="stars">' + list + '</div>')
+              .trigger('set.rating', isChecked);
+            
+            $('a', el).bind('click', $.fn.rating.click);            
+            el.trigger('hover.rating');
+        },
+        set: function(e, val) {
+            var el = $(this),
+                item = $('a', el),
+                input = undefined;
+            
+            if (val) {
+                item.removeClass('fullStar');
+                
+                input = item.filter(function(i){
+                    if ($(this).attr('title') == val)
+                        return $(this);
+                    else
+                        return false;
+                });
+                
+                input
+                    .addClass('fullStar')
+                    .prevAll()
+                    .addClass('fullStar');
+            }
+            
+            return;
+        },
+        hover: function(e){
+            var el = $(this),
+                stars = $('a', el);
+            
+            stars.bind('mouseenter', function(e){
+                // add tmp class when mouse enter
+                $(this)
+                    .addClass('tmp_fs')
+                    .prevAll()
+                    .addClass('tmp_fs');
+                
+                $(this).nextAll()
+                    .addClass('tmp_es');
+            });
+            
+            stars.bind('mouseleave', function(e){
+                // remove all tmp class when mouse leave
+                $(this)
+                    .removeClass('tmp_fs')
+                    .prevAll()
+                    .removeClass('tmp_fs');
+                
+                $(this).nextAll()
+                    .removeClass('tmp_es');
+            });
+        },
+        click: function(e){
+            e.preventDefault();
+            var el = $(e.target),
+                container = el.parent().parent(),
+                inputs = container.children('input'),
+                rate = el.attr('title');
+                
+            matchInput = inputs.filter(function(i){
+                if ($(this).val() == rate)
+                    return true;
+                else
+                    return false;
+            });
+            
+            matchInput
+                .attr('checked', true)
+				.siblings('input').attr('checked', false);
+            
+            container
+                .trigger('set.rating', matchInput.val())
+                .data('rating').callback(rate, e);
+        }
+    });
+    
+})(jQuery);
+
+jQuery('.star-rating').rating(function(rate, e){
+});
+
+</script>
+
+
+
+</body>
+</html>

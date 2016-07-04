@@ -26,4 +26,5 @@ public interface Snapshot<T extends SnapshotEnabled> {
 	void clear();
 
 	void debug();
+
 }

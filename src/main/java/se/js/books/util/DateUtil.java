@@ -12,4 +12,9 @@ public class DateUtil {
 	public static String format(LocalDate date) {
 		return date != null ? date.format(DateTimeFormatter.ISO_LOCAL_DATE) : null;
 	}
+
+	public static String dateTimeAsString(LocalDateTime date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh.mm, dd MMM yyyy ");
+		return date != null ? date.format(formatter) : null;
+	}
 }

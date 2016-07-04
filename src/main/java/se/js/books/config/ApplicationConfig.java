@@ -9,6 +9,7 @@ import se.js.books.service.BooksReadModel;
 import se.js.books.service.BooksWriteModel;
 import se.js.books.service.MemorySnapshot;
 import se.js.books.service.MyBooksReadModel;
+import se.js.books.service.MyEventsReadModel;
 import se.js.books.service.RatingsReadModel;
 import se.js.books.service.RatingsWriteModel;
 import se.js.books.service.Snapshot;
@@ -44,6 +45,12 @@ public class ApplicationConfig {
 	@Scope("prototype")
 	public MyBooksReadModel myBooksReadModel() {
 		return new MyBooksReadModel();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public MyEventsReadModel myEventsReadModel() {
+		return new MyEventsReadModel();
 	}
 
 	@Bean
