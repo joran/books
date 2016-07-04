@@ -7,9 +7,11 @@ import static java.util.stream.Stream.of;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -61,7 +63,7 @@ public class EventService {
 		File file = new File(props.getEventsFile());
 		if (file.exists()) {
 			LOG.info("Reading events from file: " + file.getAbsolutePath());
-			try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(props.getEventsFile()), "UTF-8"))) {
 				events = in.lines().map(this::bookEventFromJsonString).collect(Collectors.toList());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -110,7 +112,7 @@ public class EventService {
 
 	private Consumer<BookEvent> withFilePersistence(Consumer<BookEvent> consumer) {
 		return (BookEvent event) -> {
-			try (BufferedWriter out = new BufferedWriter(new FileWriter(props.getEventsFile(), true))) {
+			try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(props.getEventsFile(), true), "UTF-8"))) {
 				consumer.accept(event);
 				out.write(mapper.writeValueAsString(event));
 				out.newLine();
