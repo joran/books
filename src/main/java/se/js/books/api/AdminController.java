@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import se.js.books.service.BooksReadModel;
+import se.js.books.service.EventsReadModel;
 import se.js.books.service.events.BookEvent;
 
 @Controller
@@ -18,11 +18,11 @@ import se.js.books.service.events.BookEvent;
 public class AdminController {
 
 	@Inject
-	BooksReadModel booksProvider;
+	EventsReadModel eventsProvider;
 
 	@ResponseBody
 	@RequestMapping(path = "events", method = RequestMethod.GET)
 	public List<BookEvent> findAllEvents(HttpServletResponse response) {
-		return booksProvider.getAllEvents();
+		return eventsProvider.getAllEvents();
 	}
 }

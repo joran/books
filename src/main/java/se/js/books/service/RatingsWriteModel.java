@@ -34,14 +34,14 @@ public class RatingsWriteModel {
 	public void incRatingBook(UUID id) {
 		Optional<Book> optBook = findBookById(id);
 		if (optBook.isPresent()) {
-			eventService.withPersistence(this::handleEvent).accept(BookEvent.ratingIncremented(optBook.get()));
+			eventService.handleEvent(this::handleEvent).accept(BookEvent.ratingIncremented(optBook.get()));
 		}
 	}
 
 	public Optional<BookRatingRegistration> rateBook(UUID id, int rating) {
 		Optional<Book> optBook = findBookById(id);
 		if (optBook.isPresent()) {
-			eventService.withPersistence(this::handleEvent).accept(BookEvent.rated(optBook.get(), rating));
+			eventService.handleEvent(this::handleEvent).accept(BookEvent.rated(optBook.get(), rating));
 			return findLastRatingByBookId(id);
 		}
 		return Optional.empty();

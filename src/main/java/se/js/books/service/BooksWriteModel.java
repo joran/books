@@ -24,14 +24,14 @@ public class BooksWriteModel {
 
 	public Book addNewBook(String author, String title, int pages) {
 		Book book = new Book(author, title, pages);
-		eventService.withPersistence(this::handleEvent).accept(BookEvent.created(book));
+		eventService.handleEvent(this::handleEvent).accept(BookEvent.created(book));
 		return book;
 	}
 
 	public void removeBook(UUID id) {
 		Optional<Book> optBook = findById(id);
 		if (optBook.isPresent()) {
-			eventService.withPersistence(this::handleEvent).accept(BookEvent.removed(optBook.get()));
+			eventService.handleEvent(this::handleEvent).accept(BookEvent.removed(optBook.get()));
 		}
 	}
 
@@ -54,6 +54,8 @@ public class BooksWriteModel {
 			case REMOVED:
 				books.remove(book);
 				break;
+			case SYSTEM_RESET:
+				books.clear();
 			default:
 				break;
 			}

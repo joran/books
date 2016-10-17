@@ -63,6 +63,8 @@ public class MyBooksReadModel {
 				uiBook1.setRate(rating1);
 				books.save(uiBook1);
 				break;
+			case SYSTEM_RESET:
+				books.clear();
 			default:
 				break;
 			}

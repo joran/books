@@ -1,6 +1,6 @@
 package se.js.books.domain;
 
-import static se.js.books.util.DateUtil.format;
+import static se.js.books.util.DateUtil.formatISO8601;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -119,7 +119,7 @@ public class Book implements SnapshotEnabled {
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", author=" + author + ", title=" + title + ", pages=" + pages + ", added="
-				+ format(added) + ", removed=" + format(removed) + "]";
+				+ formatISO8601(added) + ", removed=" + formatISO8601(removed) + "]";
 	}
 
 }

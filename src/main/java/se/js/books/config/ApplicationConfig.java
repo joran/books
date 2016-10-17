@@ -2,20 +2,31 @@ package se.js.books.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 
 import se.js.books.domain.SnapshotEnabled;
 import se.js.books.service.BooksReadModel;
 import se.js.books.service.BooksWriteModel;
+import se.js.books.service.EventsReadModel;
 import se.js.books.service.MemorySnapshot;
 import se.js.books.service.MyBooksReadModel;
 import se.js.books.service.MyEventsReadModel;
 import se.js.books.service.RatingsReadModel;
 import se.js.books.service.RatingsWriteModel;
 import se.js.books.service.Snapshot;
+import se.js.books.store.BookEventStore;
+import se.js.books.store.FileBookEventStore;
+import se.js.books.store.MemoryBookEventStore;
 
 @Configuration
 public class ApplicationConfig {
+
+	@Bean
+	@Scope("prototype")
+	public EventsReadModel eventsReadModel() {
+		return new EventsReadModel();
+	}
 
 	@Bean
 	@Scope("prototype")
@@ -57,5 +68,18 @@ public class ApplicationConfig {
 	@Scope("prototype")
 	public <T extends SnapshotEnabled> Snapshot<T> snapshot() {
 		return new MemorySnapshot<>();
+	}
+
+	@Bean
+	@Scope("prototype")
+	@Profile("mem")
+	public BookEventStore memBookEventStore() {
+		return new MemoryBookEventStore();
+	}
+	@Bean
+	@Scope("prototype")
+	@Profile("file")
+	public BookEventStore fileBookEventStore() {
+		return new FileBookEventStore();
 	}
 }

@@ -59,6 +59,8 @@ public class RatingsReadModel {
 				_rating1.incRating();
 				bookRatings.save(_rating1);
 				break;
+			case SYSTEM_RESET:
+				bookRatings.clear();
 			default:
 				break;
 			}
